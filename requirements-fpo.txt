@@ -1,0 +1,3 @@
+# Additional dependency used by AAD.
+# Install a wheel/build compatible with your PyTorch and CUDA versions.
+mmcv>=2.0.0,<2.3.0
