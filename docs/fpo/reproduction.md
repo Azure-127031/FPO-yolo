@@ -1,6 +1,6 @@
 # Reproduction guide
 
-[Project home](../../README.md) · [简体中文](reproduction.zh-CN.md) · [Development record](development.md)
+[Project home](../../README.md) · [简体中文](reproduction.zh-CN.md) · [Code design](architecture.md) · [Experiments](experiments.md) · [Development record](development.md)
 
 The released implementation uses Ultralytics 8.3.237. This guide separates entry-point defaults from the dataset-specific settings used for the reported results. Dataset preparation is required; this release does not contain downloaded datasets, annotation-conversion utilities, or trained checkpoints.
 

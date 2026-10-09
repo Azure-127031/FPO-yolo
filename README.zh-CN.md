@@ -2,7 +2,7 @@
 
 ### 面向特征传递的无人机影像小目标检测器
 
-[English](README.md) | [简体中文](README.zh-CN.md) · [快速开始](#快速开始) · [实验结果](#实验结果) · [复现指南](docs/fpo/reproduction.zh-CN.md) · [研究与图件演进](docs/fpo/development.zh-CN.md)
+[English](README.md) | [简体中文](README.zh-CN.md) · [快速开始](#快速开始) · [实验结果](#实验结果) · [代码改进](docs/fpo/architecture.zh-CN.md) · [实验历程](docs/fpo/experiments.zh-CN.md) · [研究与绘图](docs/fpo/development.zh-CN.md)
 
 **[GitHub 仓库](https://github.com/Azure-127031/FPO-yolo)**
 
@@ -16,9 +16,19 @@ FPO-YOLO 基于 YOLO11，采用步长为 4、8、16 的 **P2–P4 预测层**，
 
 结构图保留原有布局；尺度转换、shortcut 语义与特征命名均对照公开配置核验。[查看图件的形成过程 →](docs/fpo/development.zh-CN.md#图件如何形成)
 
+## 阅读入口
+
+| 你想了解什么 | 从这里开始 |
+|---|---|
+| 方法是什么、最终效果怎样 | 本页的[方法概览](#方法概览)与[实验结果](#实验结果) |
+| 相对 YOLO11 改了哪些代码、模块如何连接 | [代码改进方案](docs/fpo/architecture.zh-CN.md)：YAML 层级、四个模块的实际计算和模型集成 |
+| 每组实验为什么做、结果支持什么选择 | [实验历程](docs/fpo/experiments.zh-CN.md)：E1–E8 对照、训练与续训、固定测试及时间节点 |
+| 如何准备环境、训练和评估 | [快速开始](#快速开始) → [完整复现指南](docs/fpo/reproduction.zh-CN.md) |
+| 从早期图稿到论文与第二版开源经历了什么 | [研究与绘图历程](docs/fpo/development.zh-CN.md)：时间线、绘图工具、图件修订与前后对照 |
+
 ## 更新记录
 
-- **2026-10-09：**完善中英文文档，加入 UAVDT、AI-TOD-v2 结果及各自评估设置，整理图件制作过程。
+- **2026-10-09：**完善第二版中英文文档，加入 UAVDT、AI-TOD-v2 结果及各自评估设置；补全代码改进说明、实验历程、早期时间节点和图件制作过程。
 - **2026-09-29：**发布基于 Ultralytics 8.3.237 的 FPO-YOLO 实现。
 - **2026-09-08：**建立仓库。
 
@@ -33,7 +43,7 @@ FPO-YOLO 基于 YOLO11，采用步长为 4、8、16 的 **P2–P4 预测层**，
 | **CIHF：跨层交互与高分辨率融合** | 通过条件交互更新中高层上下文，再将其对齐、聚合至浅层残差表征。 | [fpo_cihf.py](ultralytics/nn/modules/fpo_cihf.py) |
 | **PASF：位置自适应尺度融合** | 对齐颈部输出，在各预测位置分别选择不同尺度的贡献。 | [fpo_pasf.py](ultralytics/nn/modules/fpo_pasf.py) |
 
-组件组合及移除消融支持它们在共同高分辨率路径中的互补作用。[消融结果与方法承接关系 →](docs/fpo/development.zh-CN.md)
+组件组合及移除消融支持它们在共同高分辨率路径中的互补作用。[逐项查看代码改进 →](docs/fpo/architecture.zh-CN.md) · [组件对照与移除结果 →](docs/fpo/experiments.zh-CN.md#e2-组件组合与移除) · [方法承接关系 →](docs/fpo/development.zh-CN.md#方法承接与改造)
 
 ## 实验结果
 
@@ -72,6 +82,12 @@ FPO-YOLO 基于 YOLO11，采用步长为 4、8、16 的 **P2–P4 预测层**，
 | FPO-YOLO-s | 54.4 | 25.0 |
 
 保留公开的 **11,214 / 2,804 / 14,018** train/val/test 划分。仅以 `train` 训练，使用 `val` 选择权重，以 FP32、`max_det=300` 在 `test` 上评估。上述结果采用相同的 Ultralytics 评估器，不是官方 tiny 尺寸分组 COCO 评估的重实现。UAVDT 和 AI-TOD-v2 均**分别训练模型**，不表示 VisDrone 权重的零样本跨域迁移。[各数据集复现设置 →](docs/fpo/reproduction.zh-CN.md#数据集与划分)
+
+### 从结构对照到补充实验
+
+实验先区分 P2–P4 预测与跨层交互的贡献，再比较 AAD、BCSG、PASF 的单独加入、两两组合及完整配置；随后核对动态采样、响应分组、检测头和回归损失。最终模型扩展到 n/s/m/l，并在固定 test-dev 上评估。UAVDT 与 AI-TOD-v2 则分别训练，使用各自明确的数据划分。
+
+[查看 E1–E8 实验路线、对照表和有日期依据的训练记录 →](docs/fpo/experiments.zh-CN.md)
 
 ## 定性比较
 
@@ -169,7 +185,7 @@ python scripts/val.py --weights runs/fpo_yolo/fpo_yolo_s_e200/weights/best.pt --
 | [ultralytics/nn/modules](ultralytics/nn/modules) | FPO 模块与继承的 Ultralytics 组件 |
 | [scripts](scripts) | 结构检查、训练和评估入口 |
 | [configs](configs) | VisDrone、UAVDT 数据模板 |
-| [docs/fpo](docs/fpo) | 复现指南、演进记录和图件资源 |
+| [docs/fpo](docs/fpo) | 代码改进、实验历程、复现指南、研究与绘图记录及图件资源 |
 
 ## 发布内容与适用范围
 

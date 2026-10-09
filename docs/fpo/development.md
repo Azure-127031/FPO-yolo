@@ -1,10 +1,12 @@
 # Research and figure development
 
-[GitHub repository](https://github.com/Azure-127031/FPO-yolo) · [Project home](../../README.md) · [简体中文](development.zh-CN.md) · [Reproduction guide](reproduction.md)
+[GitHub repository](https://github.com/Azure-127031/FPO-yolo) · [Project home](../../README.md) · [简体中文](development.zh-CN.md) · [Code design](architecture.md) · [Experiments](experiments.md) · [Reproduction guide](reproduction.md)
 
 FPO-YOLO developed through component drawings, a complete detection path, VisDrone experiments, additional-dataset evaluation, and a public implementation. This page connects the retained materials: dated figure versions, manuscript checks against code and results, and the cropping, assembly, semantic corrections, and palette revisions that brought PowerPoint drawings into the paper and repository.
 
 [Timeline](#documented-milestones) · [Development narrative](#how-the-work-developed) · [Design and ablations](#from-a-shallow-prediction-level-to-a-coordinated-path) · [Figure workflow](#figure-development) · [Detection visualization](#detection-and-response-visualization)
+
+This page focuses on research progression and figure development. See [code design](architecture.md) for component computations and [experiment history](experiments.md) for the complete comparison tables and training process. Key ablations remain below to explain how the method developed.
 
 ## Documented milestones
 

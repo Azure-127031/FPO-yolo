@@ -2,7 +2,7 @@
 
 ### A Feature Propagation-Oriented Detector for Small Objects in UAV Imagery
 
-[English](README.md) | [简体中文](README.zh-CN.md) · [Quick start](#quick-start) · [Results](#results) · [Reproduction guide](docs/fpo/reproduction.md) · [Research & figure development](docs/fpo/development.md)
+[English](README.md) | [简体中文](README.zh-CN.md) · [Quick start](#quick-start) · [Results](#results) · [Code design](docs/fpo/architecture.md) · [Experiments](docs/fpo/experiments.md) · [Research & figures](docs/fpo/development.md)
 
 **[GitHub repository](https://github.com/Azure-127031/FPO-yolo)**
 
@@ -16,9 +16,19 @@ On **VisDrone2019 validation**, FPO-YOLO-s reaches **47.9% mAP50 / 29.2% mAP50�
 
 The overview preserves the original diagram layout. Scale transitions, shortcut semantics, and feature names are checked against the released configuration. See [how the figures were developed](docs/fpo/development.md#figure-development).
 
+## Reading guide
+
+| What would you like to understand? | Start here |
+|---|---|
+| The method and final results | [Method](#method) and [results](#results) on this page |
+| What changes relative to YOLO11, and how the code connects | [Code design](docs/fpo/architecture.md): YAML layers, four component computations, and integration |
+| Why each experiment was conducted and what its results support | [Experiment history](docs/fpo/experiments.md): E1–E8 comparisons, training/resume, fixed testing, and dated milestones |
+| How to install, train, and evaluate | [Quick start](#quick-start) → [full reproduction guide](docs/fpo/reproduction.md) |
+| How the project developed from early drawings to the paper and second release | [Research and figure history](docs/fpo/development.md): timeline, tools, revisions, and before/after figures |
+
 ## Updates
 
-- **2026-10-09:** Expanded English/Chinese documentation, added UAVDT and AI-TOD-v2 results with separate evaluation protocols, and documented the figure-development workflow.
+- **2026-10-09:** Expanded second-edition English/Chinese documentation with UAVDT and AI-TOD-v2 results and their protocols; added code-design explanations, experiment history, earlier milestones, and the figure-development workflow.
 - **2026-09-29:** Released the FPO-YOLO implementation based on Ultralytics 8.3.237.
 - **2026-09-08:** Created the repository.
 
@@ -33,7 +43,7 @@ Small objects have limited spatial support. Preserving a shallow prediction leve
 | **CIHF** — cross-level interaction and high-resolution fusion | Updates middle/deep context through conditional interaction, then aligns and aggregates it onto a shallow residual representation. | [fpo_cihf.py](ultralytics/nn/modules/fpo_cihf.py) |
 | **PASF** — position-adaptive scale fusion | Aligns neck features and selects their contributions separately at each output location before prediction. | [fpo_pasf.py](ultralytics/nn/modules/fpo_pasf.py) |
 
-The components are evaluated in a shared high-resolution configuration. Combination and removal ablations support their complementary roles within this path. [Ablation results and design lineage →](docs/fpo/development.md)
+The components are evaluated in a shared high-resolution configuration. Combination and removal ablations support their complementary roles within this path. [Implementation walkthrough →](docs/fpo/architecture.md) · [Combination and removal results →](docs/fpo/experiments.md#e2-component-combinations-and-removal) · [Design lineage →](docs/fpo/development.md#design-lineage)
 
 ## Results
 
@@ -72,6 +82,12 @@ The custom split uses **24 complete training sequences / 6 validation sequences*
 | FPO-YOLO-s | 54.4 | 25.0 |
 
 The public **11,214 / 2,804 / 14,018** train/val/test split is retained. Models are trained only on `train`, selected on `val`, and evaluated on `test` with FP32 and `max_det=300`. These are results from the shared Ultralytics evaluator; they are not a reimplementation of the official tiny-size COCO evaluation. UAVDT and AI-TOD-v2 use **separately trained models**, rather than zero-shot transfer of VisDrone weights. [Dataset-specific protocols →](docs/fpo/reproduction.md#dataset-protocols)
+
+### From structural comparisons to additional datasets
+
+The experiments first distinguish P2–P4 prediction from cross-level interaction, then compare AAD, BCSG, and PASF individually, in pairs, and together. Sampling variants, response grouping, heads, and regression losses are examined within the framework. The final model extends to n/s/m/l and is evaluated on fixed test-dev data. UAVDT and AI-TOD-v2 models are trained separately using their specified splits.
+
+[Read the E1–E8 comparisons, tables, and dated training records →](docs/fpo/experiments.md)
 
 ## Qualitative comparison
 
@@ -169,7 +185,7 @@ The figure workflow combines **PowerPoint → PDF** architecture exports, **LaTe
 | [ultralytics/nn/modules](ultralytics/nn/modules) | FPO modules and inherited Ultralytics components |
 | [scripts](scripts) | Architecture inspection, training, and evaluation entry points |
 | [configs](configs) | VisDrone and UAVDT dataset templates |
-| [docs/fpo](docs/fpo) | Reproduction guide, development record, and figure assets |
+| [docs/fpo](docs/fpo) | Code design, experiment history, reproduction, research/figure history, and figure assets |
 
 ## Availability and scope
 

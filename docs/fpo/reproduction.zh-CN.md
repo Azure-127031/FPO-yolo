@@ -1,6 +1,6 @@
 # 复现指南
 
-[项目首页](../../README.zh-CN.md) · [English](reproduction.md) · [研究与图件演进](development.zh-CN.md)
+[项目首页](../../README.zh-CN.md) · [English](reproduction.md) · [代码改进](architecture.zh-CN.md) · [实验历程](experiments.zh-CN.md) · [研究与图件演进](development.zh-CN.md)
 
 公开实现基于 Ultralytics 8.3.237。本指南区分运行入口的默认设置与结果对应的数据集设置。数据需自行准备；当前版本不包含下载好的数据集、标注转换工具或训练权重。
 

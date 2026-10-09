@@ -1,10 +1,12 @@
 # 研究与图件演进记录
 
-[GitHub 仓库](https://github.com/Azure-127031/FPO-yolo) · [项目首页](../../README.zh-CN.md) · [English](development.md) · [复现指南](reproduction.zh-CN.md)
+[GitHub 仓库](https://github.com/Azure-127031/FPO-yolo) · [项目首页](../../README.zh-CN.md) · [English](development.md) · [代码改进](architecture.zh-CN.md) · [实验历程](experiments.zh-CN.md) · [复现指南](reproduction.zh-CN.md)
 
 FPO-YOLO 从分模块的计算图、整体检测路径和 VisDrone 实验逐步走向补充数据集评估与公开实现。本页把已有材料串成一条可以追溯的工作记录：什么时候保存了哪些图稿，论文如何对照代码和结果修订，以及 PowerPoint 图如何经过裁剪、装配、语义核对和配色调整进入论文与 GitHub。
 
 [完整时间线](#可核实的进展记录) · [阶段回顾](#一路如何推进) · [设计与消融](#从浅层预测到完整检测路径) · [绘图过程](#图件如何形成) · [检测与响应可视化](#检测与响应可视化)
+
+本页侧重研究推进与图件形成。逐模块计算见[代码改进方案](architecture.zh-CN.md)，完整对照表及训练过程见[实验历程](experiments.zh-CN.md)；下面保留关键消融，帮助理解方法如何逐步形成。
 
 ## 可核实的进展记录
 
