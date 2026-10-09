@@ -1,8 +1,74 @@
 # Research and figure development
 
-[Project home](../../README.md) · [简体中文](development.zh-CN.md) · [Reproduction guide](reproduction.md)
+[GitHub repository](https://github.com/Azure-127031/FPO-yolo) · [Project home](../../README.md) · [简体中文](development.zh-CN.md) · [Reproduction guide](reproduction.md)
 
-FPO-YOLO studies how a high-resolution detection path uses local detail after successive feature transformations. This record explains the design sequence, the evidence used to examine component complementarity, and how the manuscript figures were produced. Dates below refer to repository commits or dated figure/document revisions; they are not inferred training dates.
+FPO-YOLO developed through component drawings, a complete detection path, VisDrone experiments, additional-dataset evaluation, and a public implementation. This page connects the retained materials: dated figure versions, manuscript checks against code and results, and the cropping, assembly, semantic corrections, and palette revisions that brought PowerPoint drawings into the paper and repository.
+
+[Timeline](#documented-milestones) · [Development narrative](#how-the-work-developed) · [Design and ablations](#from-a-shallow-prediction-level-to-a-coordinated-path) · [Figure workflow](#figure-development) · [Detection visualization](#detection-and-response-visualization)
+
+## Documented milestones
+
+The drawing archive predates the GitHub repository. This timeline brings together figure preparation, manuscript revisions, experiments, and public releases so that each stage has a concrete outcome.
+
+**How to read the dates:** “Figure timestamp” denotes the modification time retained on a source file, not the date a model was invented or an experiment finished. Revision and experiment entries come from dated records; repository entries link to commits. For current numbers and procedures, use the second-edition README and reproduction guide.
+
+| Date | Stage | Work and retained outcome | Date evidence |
+|---|---|---|---|
+| 2026-03-03 | Baseline drawing | Retained a YOLO11 structure PDF as a reference for explaining later architectural changes. | Figure timestamp |
+| 2026-03-09–03-17 | Individual module drawings | Saved BCSG overview, AAD, SBA, ASFF, and Scharr-gate PPT/PDF files. These explain individual operations and should not be treated as a complete description of the current release. | Figure timestamps |
+| 2026-03-30 | Dataset illustrations | Saved VisDrone distribution and selected-scene illustrations for dataset statistics and representative aerial scenes. | Figure timestamps |
+| 2026-06-12–07-15 | Editable figure iterations | Retained later PowerPoint versions for AAD, ASFF, and the BCSG spatial branch. Module diagrams continued to be maintained as editable objects. | Figure timestamps |
+| 2026-08-04–08-11 | Overview and component figures | Saved BCSG drawings and PPTX/PDF versions of the FPO overview, YOLO11s baseline, AAD, and PASF, providing both an overall path and component detail. | Figure timestamps |
+| 2026-09-03 | Initial manuscript materials | Retained the initial manuscript, code document, and CIHF/BCSG figure versions for subsequent checks across text, implementation, and figures. | Manuscript and figure records |
+| 2026-09-04–09-06 | Experiment-section revisions | Updated tables and analysis against validation records; separated component increments, combination effects, computational cost, and class-wise performance before another prose revision. | Dated chapter-four revision notes |
+| 2026-09-08 | Repository creation | Created the repository in [`366a29d`](https://github.com/Azure-127031/FPO-yolo/commit/366a29d). Manuscript work in this period also checked method descriptions, tables, class distributions, and class-wise AP plots. | Commit and revision records |
+| 2026-09-09–09-10 | Method and experiment checks | Continued chapter-level comparisons against implementation and literature; added the UAVDT experiment section to the manuscript. | Dated chapter sources |
+| 2026-09-11–09-16 | Gate visualization and full-paper checks | Retained spatial-gate implementation/visualization scripts, integrated manuscript revisions, updated validation/test-dev tables, and refined gate and dataset figures. | Script versions and revision directories |
+| 2026-09-18–09-19 | English and journal-layout drafts | Prepared English and CAS double-column drafts; checked tables, captions, references, and complexity conventions, with separate UAVDT protocol notes. | Layout, table, and protocol records |
+| 2026-09-29 | Implementation release and BCSG assembly | Released the implementation in [`9016224`](https://github.com/Azure-127031/FPO-yolo/commit/9016224). Figure work corrected BCSG formulas and assembled bottleneck/spatial/channel panels at a common visible width. | Commit and figure assembly sources |
+| 2026-10-01–10-02 | Supplementary-experiment protocol review | Reviewed UAVDT sequence coverage, internal validation versus official testing, and literature metrics; retained diagnostics and decisions. | Experiment review records |
+| 2026-10-03 | AI-TOD-v2 preparation | Completed download/content audits and checked the fixed splits; recorded box conversion, empty images, invalid boxes, final code snapshots, and baseline training records. | Dataset and experiment log |
+| 2026-10-05 | Supplementary training | Resumed FPO-YOLO-s from its saved training state and started the corresponding FPO-YOLO-n run, checking code snapshots, scales, settings, and resume provenance. | Dated training records |
+| 2026-10-06 | AI-TOD-v2 training and testing completed | Verified completion of YOLO11n/s and FPO-YOLO-n/s training; evaluated the fixed test split with validation-selected checkpoints and saved the results/settings. | Completion and test-summary records |
+| 2026-10-07 | Results and annotated feedback | Incorporated AI-TOD-v2 testing and detection-conditioned visualization, then revised the problem–design–evidence connection, formulas, abbreviations, captions, and references against peer annotations. | Supplementary manuscript and feedback records |
+| 2026-10-08 | Figure semantics and appearance | Checked strides, feature names, and shortcuts; compared redraws with local revisions, retained the original shapes/routes, and recolored individual modules. Organized the accuracy–complexity plot by mAP50. | Figure revisions and geometry checks |
+| 2026-10-09 | Second-edition documentation | Prepared English/Chinese manuscript versions with repository links and released the second-edition documentation in [`d367e8e`](https://github.com/Azure-127031/FPO-yolo/commit/d367e8e). This expanded history builds on that release using existing code, assets, and results. | Commit and bilingual delivery records |
+
+## How the work developed
+
+### Explain individual computations, then connect the path
+
+The early drawing archive contains separate views of downsampling, local gates, cross-level interaction, and scale fusion. PowerPoint supported changes to individual blocks, arrows, tensor illustrations, and formulas; PDF exports supported manuscript preparation. By August, the retained materials included both a network overview and component diagrams, allowing a reader to follow the overall data flow before examining an operation in detail.
+
+Some source drawings still carry SBA or ASFF names. They document antecedents in the drawing and design process, but a filename alone cannot date the final architecture. Later manuscript and repository documentation distinguish these sources, the implemented modifications, and the current code entry points; see [Design lineage](#design-lineage).
+
+### Connect manuscript statements to code and result tables
+
+September revisions brought together the initial manuscript, code document, and validation logs. Checks became concrete: whether a drawn transition actually reduces resolution, whether an explanation follows the implemented computation, whether validation and test-dev results remain separate, and whether component gains are accompanied by their computational costs.
+
+Chapter four underwent section-level revision, a complete review, and another prose pass. Dataset illustrations explain the data, class-wise AP plots analyze class performance, and component tables provide evidence for architectural comparisons. Later checks also updated baseline and complexity conventions. **The history records that process; current numbers remain in the [second-edition result tables](../../README.md#results).**
+
+### Move from a Chinese draft to a double-column manuscript
+
+By mid-September, revisions addressed the complete manuscript rather than isolated chapters. Related work, methods, ablations, and additional datasets needed a connected argument. English and CAS double-column drafts followed, with checks on figure widths, table notes, subfigure labels, and cross-references. A drawing also had to remain legible at its actual column width.
+
+The three BCSG source panels had different page margins, so equal page widths did not align their visible contents. The September 29 assembly first cropped the content, then used LaTeX/TikZ to place the panels at a common visible width and align their labels. This improved manuscript readability while retaining the computation being illustrated.
+
+### Retain the dataset and evaluation process
+
+The UAVDT work produced several protocol reviews: how complete sequences were divided, how internal validation differed from official testing, and whether image counts and metrics from other papers described comparable experiments. The early-October diagnostics continued this work. Public documentation describes the split and evaluator actually used.
+
+The AI-TOD-v2 log connects download, auditing, annotation conversion, training, resumption, and testing. Data and baseline records were checked on October 3; FPO training progressed on October 5; four completed runs and their fixed-split tests were verified on October 6. Results entered the manuscript on October 7. This gives a result row a traceable split and checkpoint-selection procedure rather than only a final score.
+
+### Refine the original visual language
+
+October figure work included local overlays, a vector redraw, and a return to local revision of the original. The selected version preserves the established shapes, feature planes, and connector routes, corrects labels and computational semantics, and changes colors at the module level. Its geometry checks retain the original 104 vector paths and feature-plane placements.
+
+Repeated objects such as Conv, Split, BCSG, and Concat receive consistent colors, with text and arrows carrying the reading sequence. Side-by-side exports check the visual change. Experimental plots remain tied to their data tables: axis or legend revisions also require checking model identifiers and values. The final assets and production methods appear below.
+
+### Turn the material into an open research record
+
+The repository was created on September 8, the implementation released on September 29, and bilingual second-edition documentation published on October 9. The README provides the model, results, and entry points; the reproduction guide explains data and environment settings; this page follows the research and figure work. The expanded history makes the earlier stages visible while retaining the existing second-edition implementation and results.
 
 ## From a shallow prediction level to a coordinated path
 
@@ -52,16 +118,6 @@ The code retains established operators where appropriate and modifies how they a
 | PASF | ASFF and coordinate attention | Scale alignment and spatial Softmax weighting are retained; the released head adds its weight-generation, normalization, temperature, and directional residual-refinement design. |
 
 These are architectural modifications and their coordinated use, rather than claims that all underlying operators were invented here. Refer to the module files linked in the [README](../../README.md#method) for the implementation.
-
-## Documented milestones
-
-| Date | Recorded development |
-|---|---|
-| 2026-09-08 | Initial repository commit (`366a29d`). |
-| 2026-09-29 | Public implementation release (`9016224`); dated BCSG panel assembly aligns the bottleneck, spatial gate, and channel gate at a common visible width. |
-| 2026-10-07 | Manuscript revision incorporates the AI-TOD-v2 test protocol and detection-conditioned qualitative comparison. |
-| 2026-10-08 | Architecture figure is reconciled with the implemented stride/shortcut semantics; original geometry and connectors are retained, and module-specific colors are revised. The accuracy–complexity comparison is organized by mAP50. |
-| 2026-10-09 | English/Chinese manuscripts are synchronized, nearby float placement is revised, and this research/documentation record is prepared. |
 
 ## Figure development
 

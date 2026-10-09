@@ -4,6 +4,8 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md) · [Quick start](#quick-start) · [Results](#results) · [Reproduction guide](docs/fpo/reproduction.md) · [Research & figure development](docs/fpo/development.md)
 
+**[GitHub repository](https://github.com/Azure-127031/FPO-yolo)**
+
 FPO-YOLO is a YOLO11-based aerial detector with **P2–P4 prediction levels** (strides 4, 8, and 16). It connects local feature modulation, adaptive downsampling, cross-level context aggregation, and location-dependent scale selection along a high-resolution detection path.
 
 On **VisDrone2019 validation**, FPO-YOLO-s reaches **47.9% mAP50 / 29.2% mAP50–95**, improving over YOLO11s by **9.1 / 6.0 percentage points** with **56.2% fewer parameters**. The same validation-selected checkpoint reaches **38.9% / 22.8% on test-dev**. The parameter reduction comes with a higher estimated operation count; runtime depends on the dataset and evaluation settings.
@@ -141,14 +143,23 @@ For this YAML, `--split test` maps to `images/test-dev`. Use the actual run dire
 
 ## Research and figure development
 
-The project moved from a high-resolution prediction path to module comparisons, multi-dataset evaluation, and implementation-aligned figures. The development record explains:
+From the early component drawings to the second public edition, the work progressed through **module illustration, detection-path organization, code/result checks, additional-dataset evaluation, and manuscript figure refinement**. The drawings developed alongside the research: each figure needed to explain the data flow and match the implementation.
 
-- why local gating, sampling, context aggregation, and output-side selection are treated as complementary operations;
-- how the original PowerPoint diagrams were checked against code and refined without changing their geometry;
-- how module fills were recolored individually, rather than applying a page-wide tint;
-- how plots, subfigure labels, detection panels, and Grad-CAM were prepared for the manuscript.
+| Period | Main development |
+|---|---|
+| March–July 2026¹ | Retained YOLO11 baseline, BCSG, AAD, and SBA/ASFF drawings; iterated PowerPoint sources and prepared VisDrone dataset/scene illustrations. |
+| August 2026¹ | Organized PPTX/PDF versions of the FPO overview, baseline, and component diagrams. |
+| September 3–16, 2026 | Brought together the manuscript, code, and logs; revised methods, ablations, class results, and figures; added the UAVDT section. Created the repository on September 8. |
+| September 18–29, 2026 | Prepared the English double-column manuscript and protocol notes, aligned the three BCSG panels, and released the implementation on September 29. |
+| October 1–6, 2026 | Reviewed supplementary protocols and completed AI-TOD-v2 auditing, four training runs, and fixed-test evaluation. |
+| October 7–8, 2026 | Incorporated results and peer feedback, checked diagram semantics, preserved original shapes/routes, and refined module colors and experimental plots. |
+| October 9, 2026 | Published bilingual second-edition documentation, added manuscript repository links, and connected the earlier research and figure records. |
 
-**[Read the development record (English)](docs/fpo/development.md) · [阅读研究与图件演进记录（中文）](docs/fpo/development.zh-CN.md)**
+¹ Early months reflect retained figure-file timestamps, not inferred experiment-completion dates. The full timeline identifies each date source.
+
+The figure workflow combines **PowerPoint → PDF** architecture exports, **LaTeX/TikZ** assembly of BCSG panels, **Matplotlib** quantitative plots, and panels from predictions and detection-conditioned Grad-CAM. The detailed record includes before/after colors and explains the problems addressed in each revision.
+
+**[Read the full research and drawing history →](docs/fpo/development.md)** · [Figure methods](docs/fpo/development.md#figure-development) · [简体中文](docs/fpo/development.zh-CN.md)
 
 ## Repository guide
 
