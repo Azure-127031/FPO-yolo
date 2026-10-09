@@ -4,8 +4,6 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md) · [快速开始](#快速开始) · [实验结果](#实验结果) · [代码改进](docs/fpo/architecture.zh-CN.md) · [实验历程](docs/fpo/experiments.zh-CN.md) · [研究与绘图](docs/fpo/development.zh-CN.md)
 
-**[GitHub 仓库](https://github.com/Azure-127031/FPO-yolo)**
-
 FPO-YOLO 基于 YOLO11，采用步长为 4、8、16 的 **P2–P4 预测层**，沿同一高分辨率检测路径协调局部特征调制、自适应下采样、跨层上下文聚合与逐位置尺度选择。
 
 在 **VisDrone2019 验证集**上，FPO-YOLO-s 取得 **47.9% mAP50 / 29.2% mAP50–95**，较 YOLO11s 提高 **9.1 / 6.0 个百分点**，参数量减少 **56.2%**。使用验证集选择的同一权重，在 **test-dev** 上取得 **38.9% / 22.8%**。参数量下降伴随估算运算量增加，运行速度还取决于数据集和评估设置。
@@ -14,7 +12,7 @@ FPO-YOLO 基于 YOLO11，采用步长为 4、8、16 的 **P2–P4 预测层**，
   <img src="docs/fpo/assets/architecture.png" alt="FPO-YOLO 整体结构、P2–P4 检测路径及 BCSG 容器" width="100%">
 </p>
 
-结构图保留原有布局；尺度转换、shortcut 语义与特征命名均对照公开配置核验。[查看图件的形成过程 →](docs/fpo/development.zh-CN.md#图件如何形成)
+**结构总览。**BCSG 与 AAD 处理局部特征及尺度转换；CIHF 为高分辨率颈部补充上下文；PASF 将三个颈部输出分别融合至 P2、P3、P4 预测层。[逐层查看代码连接 →](docs/fpo/architecture.zh-CN.md)
 
 ## 阅读入口
 
@@ -28,6 +26,7 @@ FPO-YOLO 基于 YOLO11，采用步长为 4、8、16 的 **P2–P4 预测层**，
 
 ## 更新记录
 
+- **2026-10-10：**精修中英文阅读入口与使用示例，补充同尺度 test-dev 对照和软件引用，保留完整代码、实验与图件演进记录。
 - **2026-10-09：**完善第二版中英文文档，加入 UAVDT、AI-TOD-v2 结果及各自评估设置；补全代码改进说明、实验历程、早期时间节点和图件制作过程。
 - **2026-09-29：**发布基于 Ultralytics 8.3.237 的 FPO-YOLO 实现。
 - **2026-09-08：**建立仓库。
@@ -43,11 +42,13 @@ FPO-YOLO 基于 YOLO11，采用步长为 4、8、16 的 **P2–P4 预测层**，
 | **CIHF：跨层交互与高分辨率融合** | 通过条件交互更新中高层上下文，再将其对齐、聚合至浅层残差表征。 | [fpo_cihf.py](ultralytics/nn/modules/fpo_cihf.py) |
 | **PASF：位置自适应尺度融合** | 对齐颈部输出，在各预测位置分别选择不同尺度的贡献。 | [fpo_pasf.py](ultralytics/nn/modules/fpo_pasf.py) |
 
-组件组合及移除消融支持它们在共同高分辨率路径中的互补作用。[逐项查看代码改进 →](docs/fpo/architecture.zh-CN.md) · [组件对照与移除结果 →](docs/fpo/experiments.zh-CN.md#e2-组件组合与移除) · [方法承接关系 →](docs/fpo/development.zh-CN.md#方法承接与改造)
+BCSG 改变后续阶段可用的特征响应，AAD 改变分辨率降低时这些响应的采样位置。CIHF 将随图像和通道变化的上下文权重引入浅层残差路径；PASF 随后在各预测位置选择尺度，补充 CIHF 空间共享权重无法分别作出的局部选择。上述计算依次连接特征形成、尺度转换、上下文聚合与预测。
+
+**组合证据。**以 CIHF 为共同参考，AAD、BCSG、PASF 单独加入时，验证集 mAP50–95 分别提高 0.4、1.0、0.7 个百分点；完整组合提高 2.6 个百分点，超过三项单独增益之和 2.1。移除任一组件，完整模型下降 0.6–0.9 个百分点，支持所评估配置内的互补性。[逐项查看代码改进 →](docs/fpo/architecture.zh-CN.md) · [组件对照与移除结果 →](docs/fpo/experiments.zh-CN.md#e2-组件组合与移除) · [方法承接关系 →](docs/fpo/development.zh-CN.md#方法承接与改造)
 
 ## 实验结果
 
-以下精度单位均为百分比。mAP50–95 在 IoU 0.50:0.05:0.95 上求平均。**验证集和测试集结果分别列出。**
+以下精度单位均为百分比，保留一位小数；提升幅度按舍入前结果计算。mAP50–95 在 IoU 0.50:0.05:0.95 上求平均。**验证集和测试集结果分别列出。**
 
 ### VisDrone2019-DET
 
@@ -61,6 +62,24 @@ FPO-YOLO 基于 YOLO11，采用步长为 4、8、16 的 **P2–P4 预测层**，
 
 保留官方 train/val/test-dev 划分，test-dev 使用验证集选择的权重。GFLOPs 为 640 像素输入下的分析器估算值，不能直接等同于硬件运行时间。配置另支持 `x` 尺度，本页不汇报未提供的 `x` 实验结果。
 
+<details>
+<summary><strong>test-dev 上与同尺度 YOLO11 的对照</strong></summary>
+
+| 模型 | Test-dev mAP50 | Test-dev mAP50–95 | 参数量（M） | GFLOPs |
+|---|---:|---:|---:|---:|
+| YOLO11n | 26.0 | 14.6 | 2.58 | 6.3 |
+| FPO-YOLO-n | **33.1** | **19.2** | **1.34** | 13.5 |
+| YOLO11s | 31.4 | 18.0 | 9.43 | 21.6 |
+| FPO-YOLO-s | **38.9** | **22.8** | **4.13** | 36.5 |
+| YOLO11m | 35.3 | 20.8 | 20.04 | 67.7 |
+| FPO-YOLO-m | **41.1** | **24.3** | **14.84** | 121.0 |
+| YOLO11l | 36.4 | 21.7 | 25.32 | 87.3 |
+| FPO-YOLO-l | **41.4** | **24.5** | **16.50** | 138.0 |
+
+粗体表示同尺度内更高精度或更少参数。精度收益伴随更高估计运算量；所有检查点均在 test-dev 评估前由验证集选择。
+
+</details>
+
 ### UAVDT：按完整序列划分的验证集
 
 | 模型 | Val mAP50 | Val mAP50–95 |
@@ -70,7 +89,7 @@ FPO-YOLO 基于 YOLO11，采用步长为 4、8、16 的 **P2–P4 预测层**，
 | YOLO11s | 44.4 | 24.9 |
 | FPO-YOLO-s | 52.0 | 28.3 |
 
-自定义划分由 **24 个训练序列 / 6 个验证序列**组成，共 **20,533 / 3,610 张图像**。将官方训练序列名称排序，以随机种子 42 选取完整验证序列；官方测试部分不参与该划分。本表汇报的是**验证集结果**。平均精度提升仍伴随部分类别的定位权衡，以及该数据集上的实测延迟增加。
+自定义划分由 **24 个训练序列 / 6 个验证序列**组成，共 **20,533 / 3,610 张图像**。将官方训练序列名称排序，以随机种子 42 选取完整验证序列；官方测试部分不参与该划分。本表汇报的是**验证集结果**。平均精度提升仍伴随 car、truck 的 AP 指标取舍，以及该数据集上的实测延迟增加。
 
 ### AI-TOD-v2：官方测试集
 
@@ -83,11 +102,9 @@ FPO-YOLO 基于 YOLO11，采用步长为 4、8、16 的 **P2–P4 预测层**，
 
 保留公开的 **11,214 / 2,804 / 14,018** train/val/test 划分。仅以 `train` 训练，使用 `val` 选择权重，以 FP32、`max_det=300` 在 `test` 上评估。上述结果采用相同的 Ultralytics 评估器，不是官方 tiny 尺寸分组 COCO 评估的重实现。UAVDT 和 AI-TOD-v2 均**分别训练模型**，不表示 VisDrone 权重的零样本跨域迁移。[各数据集复现设置 →](docs/fpo/reproduction.zh-CN.md#数据集与划分)
 
-### 从结构对照到补充实验
+### 受控设计对照
 
-实验先区分 P2–P4 预测与跨层交互的贡献，再比较 AAD、BCSG、PASF 的单独加入、两两组合及完整配置；随后核对动态采样、响应分组、检测头和回归损失。最终模型扩展到 n/s/m/l，并在固定 test-dev 上评估。UAVDT 与 AI-TOD-v2 则分别训练，使用各自明确的数据划分。
-
-[查看 E1–E8 实验路线、对照表和有日期依据的训练记录 →](docs/fpo/experiments.zh-CN.md)
+[E1–E8 实验索引](docs/fpo/experiments.zh-CN.md)将各项设计选择对应到具体对照：预测层与 CIHF、组件组合与移除、采样变体、BCSG 响应组织、融合检测头、回归损失、模型尺度，以及分别训练的补充数据集。该索引区分整体结构收益与组件增益，并汇报相应资源开销。
 
 ## 定性比较
 
@@ -118,7 +135,7 @@ python -c "from mmcv.ops import ModulatedDeformConv2d; print('MMCV ops import OK
 python scripts/check_model.py --scale s
 ```
 
-导入检查确认算子可用，`check_model.py` 用于构建结构；二者均不能替代实际 CUDA 训练验证。
+这些检查分别确认 Python 加载本仓库、编译算子可以导入，以及所选模型结构能够构建。
 
 ### 2. 准备 YOLO 格式数据
 
@@ -157,9 +174,23 @@ python scripts/val.py --weights runs/fpo_yolo/fpo_yolo_s_e200/weights/best.pt --
 
 `scripts/val.py` 使用 FP16 和 batch 16；AI-TOD-v2 的 FP32/batch-15 设置见[对应 API 示例](docs/fpo/reproduction.zh-CN.md#ai-tod-v2-训练与测试)。
 
+### 5. 使用训练权重进行预测
+
+```python
+from ultralytics import YOLO
+
+model = YOLO("runs/fpo_yolo/fpo_yolo_s_e200/weights/best.pt")
+model.predict(source="path/to/image.jpg", imgsz=640, conf=0.25, device=0, save=True)
+```
+
+将路径替换为自己的权重和图像。此处 `conf=0.25` 用于过滤展示预测；定量评估采用[复现指南](docs/fpo/reproduction.zh-CN.md)中的设置，包括 0.001 置信度过滤阈值。当前版本不提供预训练权重。
+
 ## 研究与图件演进
 
 从早期模块草图到第二版开源，项目经历了**分模块绘图、整体路径整理、代码与实验核对、补充数据集评估和论文图件精修**。研究过程和图的制作过程同步推进：一张结构图既要解释数据流，也要与实际实现对应。
+
+<details>
+<summary><strong>研究时间线：从早期图稿到第二版开源</strong></summary>
 
 | 时间 | 主要进展 |
 |---|---|
@@ -172,6 +203,8 @@ python scripts/val.py --weights runs/fpo_yolo/fpo_yolo_s_e200/weights/best.pt --
 | 2026 年 10 月 9 日 | 发布中英文第二版文档，补充论文开源入口，串联更早的研究与绘图记录。 |
 
 ¹ 早期月份依据保留图稿的文件时间，表示图稿版本，不推断实验完成日。完整时间线逐项说明日期来源。
+
+</details>
 
 图件制作包括 **PowerPoint → PDF** 的结构图导出、**LaTeX/TikZ** 的 BCSG 三面板装配、**Matplotlib** 的定量图，以及实际预测与检测条件 Grad-CAM 的面板整理。详细页面保留配色前后对照，并解释每次调整解决了什么问题。
 
@@ -197,6 +230,14 @@ python scripts/val.py --weights runs/fpo_yolo/fpo_yolo_s_e200/weights/best.pt --
 
 代码基于 [Ultralytics](https://github.com/ultralytics/ultralytics) 和 [MMCV](https://github.com/open-mmlab/mmcv)。AAD 使用修改后的 DCNv2 采样，CIHF 承接 SBA 式交互，PASF 采用 ASFF 式空间尺度加权与坐标注意力式方向细化。[演进记录](docs/fpo/development.zh-CN.md#方法承接与改造)区分这些来源与本项目的具体修改。
 
-对应论文题为 **FPO-YOLO: A Feature Propagation-Oriented Detector for Small Objects in UAV Imagery**。当前发布版本未提供正式发表元数据；正式引用信息公布前，可引用本仓库并记录实验使用的 commit。
+对应论文题为 **FPO-YOLO: A Feature Propagation-Oriented Detector for Small Objects in UAV Imagery**。当前发布版本未提供正式发表元数据；正式论文引用信息公布前，可使用以下软件引用并记录实验使用的 commit。该条目引用代码仓库，不代表已发表论文。
+
+```bibtex
+@misc{fpoyolo2026code,
+  title = {FPO-YOLO: Open-source implementation},
+  year = {2026},
+  howpublished = {\url{https://github.com/Azure-127031/FPO-yolo}}
+}
+```
 
 仓库遵循 [AGPL-3.0 许可](LICENSE)，请保留上游声明。提交问题时请附 commit、环境版本、数据 YAML、运行命令及完整报错，不附私人数据或凭据。

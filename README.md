@@ -4,8 +4,6 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md) · [Quick start](#quick-start) · [Results](#results) · [Code design](docs/fpo/architecture.md) · [Experiments](docs/fpo/experiments.md) · [Research & figures](docs/fpo/development.md)
 
-**[GitHub repository](https://github.com/Azure-127031/FPO-yolo)**
-
 FPO-YOLO is a YOLO11-based aerial detector with **P2–P4 prediction levels** (strides 4, 8, and 16). It connects local feature modulation, adaptive downsampling, cross-level context aggregation, and location-dependent scale selection along a high-resolution detection path.
 
 On **VisDrone2019 validation**, FPO-YOLO-s reaches **47.9% mAP50 / 29.2% mAP50–95**, improving over YOLO11s by **9.1 / 6.0 percentage points** with **56.2% fewer parameters**. The same validation-selected checkpoint reaches **38.9% / 22.8% on test-dev**. The parameter reduction comes with a higher estimated operation count; runtime depends on the dataset and evaluation settings.
@@ -14,7 +12,7 @@ On **VisDrone2019 validation**, FPO-YOLO-s reaches **47.9% mAP50 / 29.2% mAP50�
   <img src="docs/fpo/assets/architecture.png" alt="FPO-YOLO architecture: backbone, high-resolution neck, P2–P4 heads, and BCSG container" width="100%">
 </p>
 
-The overview preserves the original diagram layout. Scale transitions, shortcut semantics, and feature names are checked against the released configuration. See [how the figures were developed](docs/fpo/development.md#figure-development).
+**Architecture.** BCSG and AAD process local features and scale transitions; CIHF supplies context to the high-resolution neck; PASF fuses the three neck outputs separately for P2, P3, and P4 prediction. [Layer-by-layer code guide →](docs/fpo/architecture.md)
 
 ## Reading guide
 
@@ -28,6 +26,7 @@ The overview preserves the original diagram layout. Scale transitions, shortcut 
 
 ## Updates
 
+- **2026-10-10:** Refined bilingual navigation and usage examples, added scale-matched test-dev comparisons and a software citation, and retained the full code, experiment, and figure-development records.
 - **2026-10-09:** Expanded second-edition English/Chinese documentation with UAVDT and AI-TOD-v2 results and their protocols; added code-design explanations, experiment history, earlier milestones, and the figure-development workflow.
 - **2026-09-29:** Released the FPO-YOLO implementation based on Ultralytics 8.3.237.
 - **2026-09-08:** Created the repository.
@@ -43,11 +42,13 @@ Small objects have limited spatial support. Preserving a shallow prediction leve
 | **CIHF** — cross-level interaction and high-resolution fusion | Updates middle/deep context through conditional interaction, then aligns and aggregates it onto a shallow residual representation. | [fpo_cihf.py](ultralytics/nn/modules/fpo_cihf.py) |
 | **PASF** — position-adaptive scale fusion | Aligns neck features and selects their contributions separately at each output location before prediction. | [fpo_pasf.py](ultralytics/nn/modules/fpo_pasf.py) |
 
-The components are evaluated in a shared high-resolution configuration. Combination and removal ablations support their complementary roles within this path. [Implementation walkthrough →](docs/fpo/architecture.md) · [Combination and removal results →](docs/fpo/experiments.md#e2-component-combinations-and-removal) · [Design lineage →](docs/fpo/development.md#design-lineage)
+BCSG changes the feature responses available to later stages, while AAD changes where those responses are sampled during resolution reduction. CIHF provides image- and channel-dependent context weights to the shallow residual path. PASF then selects scales at individual prediction locations, where CIHF's spatially shared weights cannot make separate decisions. These computations connect feature formation, scale transition, contextual aggregation, and prediction.
+
+**Combination evidence.** Relative to the shared CIHF reference, AAD, BCSG, and PASF individually add 0.4, 1.0, and 0.7 points in validation mAP50–95. Their full combination adds 2.6 points, exceeding the 2.1-point sum; removing one component from the full model costs 0.6–0.9 points. These comparisons support complementarity within the evaluated configuration. [Implementation walkthrough →](docs/fpo/architecture.md) · [Combination and removal results →](docs/fpo/experiments.md#e2-component-combinations-and-removal) · [Design lineage →](docs/fpo/development.md#design-lineage)
 
 ## Results
 
-All accuracy values below are percentages. mAP50–95 averages AP over IoU thresholds 0.50:0.05:0.95. **Validation and test results are listed separately.**
+Accuracy values are percentages, rounded to one decimal place; reported gains use the unrounded results. mAP50–95 averages AP over IoU thresholds 0.50:0.05:0.95. **Validation and test results are listed separately.**
 
 ### VisDrone2019-DET
 
@@ -61,6 +62,24 @@ All accuracy values below are percentages. mAP50–95 averages AP over IoU thres
 
 The official train/val/test-dev partitions are retained. Test-dev is evaluated using validation-selected weights. GFLOPs are profiler estimates at a 640-pixel input, not a hardware-independent latency measure. The configuration also supports scale `x`; no `x` result is reported here.
 
+<details>
+<summary><strong>Scale-matched YOLO11 comparison on test-dev</strong></summary>
+
+| Model | Test-dev mAP50 | Test-dev mAP50–95 | Params (M) | GFLOPs |
+|---|---:|---:|---:|---:|
+| YOLO11n | 26.0 | 14.6 | 2.58 | 6.3 |
+| FPO-YOLO-n | **33.1** | **19.2** | **1.34** | 13.5 |
+| YOLO11s | 31.4 | 18.0 | 9.43 | 21.6 |
+| FPO-YOLO-s | **38.9** | **22.8** | **4.13** | 36.5 |
+| YOLO11m | 35.3 | 20.8 | 20.04 | 67.7 |
+| FPO-YOLO-m | **41.1** | **24.3** | **14.84** | 121.0 |
+| YOLO11l | 36.4 | 21.7 | 25.32 | 87.3 |
+| FPO-YOLO-l | **41.4** | **24.5** | **16.50** | 138.0 |
+
+Bold marks higher accuracy or fewer parameters within each scale. The improvements come with higher estimated operation counts. Checkpoints are selected on validation data before test-dev evaluation.
+
+</details>
+
 ### UAVDT — sequence-level validation
 
 | Model | Val mAP50 | Val mAP50–95 |
@@ -70,7 +89,7 @@ The official train/val/test-dev partitions are retained. Test-dev is evaluated u
 | YOLO11s | 44.4 | 24.9 |
 | FPO-YOLO-s | 52.0 | 28.3 |
 
-The custom split uses **24 complete training sequences / 6 validation sequences**, containing **20,533 / 3,610 images**. Validation sequences are sampled from the sorted official training sequence list with seed 42. The official test portion is excluded from this split; these values are **validation results**. Aggregate gains coexist with class-level localization trade-offs and increased measured latency on this dataset.
+The custom split uses **24 complete training sequences / 6 validation sequences**, containing **20,533 / 3,610 images**. Validation sequences are sampled from the sorted official training sequence list with seed 42. The official test portion is excluded from this split; these values are **validation results**. Aggregate gains coexist with car/truck AP trade-offs and increased measured latency on this dataset.
 
 ### AI-TOD-v2 — official test split
 
@@ -83,11 +102,9 @@ The custom split uses **24 complete training sequences / 6 validation sequences*
 
 The public **11,214 / 2,804 / 14,018** train/val/test split is retained. Models are trained only on `train`, selected on `val`, and evaluated on `test` with FP32 and `max_det=300`. These are results from the shared Ultralytics evaluator; they are not a reimplementation of the official tiny-size COCO evaluation. UAVDT and AI-TOD-v2 use **separately trained models**, rather than zero-shot transfer of VisDrone weights. [Dataset-specific protocols →](docs/fpo/reproduction.md#dataset-protocols)
 
-### From structural comparisons to additional datasets
+### Controlled design comparisons
 
-The experiments first distinguish P2–P4 prediction from cross-level interaction, then compare AAD, BCSG, and PASF individually, in pairs, and together. Sampling variants, response grouping, heads, and regression losses are examined within the framework. The final model extends to n/s/m/l and is evaluated on fixed test-dev data. UAVDT and AI-TOD-v2 models are trained separately using their specified splits.
-
-[Read the E1–E8 comparisons, tables, and dated training records →](docs/fpo/experiments.md)
+The [E1–E8 experiment index](docs/fpo/experiments.md) connects each design decision to its comparison: prediction levels and CIHF; component combinations and removal; sampling variants; BCSG response organization; fusion heads; regression losses; model scales; and separately trained additional datasets. It distinguishes structural gains from component gains and reports the associated resource costs.
 
 ## Qualitative comparison
 
@@ -118,7 +135,7 @@ python -c "from mmcv.ops import ModulatedDeformConv2d; print('MMCV ops import OK
 python scripts/check_model.py --scale s
 ```
 
-The import check verifies operator availability, while `check_model.py` builds the architecture. Neither substitutes for a successful CUDA training run.
+These checks confirm that Python resolves this checkout, the compiled operator can be imported, and the selected architecture can be constructed.
 
 ### 2. Prepare YOLO-format data
 
@@ -157,9 +174,23 @@ For this YAML, `--split test` maps to `images/test-dev`. Use the actual run dire
 
 `scripts/val.py` uses FP16 and batch 16. Use the [AI-TOD-v2 API example](docs/fpo/reproduction.md#ai-tod-v2-training-and-test-evaluation) for its FP32/batch-15 protocol.
 
+### 5. Predict with your trained checkpoint
+
+```python
+from ultralytics import YOLO
+
+model = YOLO("runs/fpo_yolo/fpo_yolo_s_e200/weights/best.pt")
+model.predict(source="path/to/image.jpg", imgsz=640, conf=0.25, device=0, save=True)
+```
+
+Replace the paths with your checkpoint and input. Here `conf=0.25` is a display filter for predictions; quantitative evaluation uses the settings in the [reproduction guide](docs/fpo/reproduction.md), including a 0.001 confidence filter. This release does not provide pretrained checkpoints.
+
 ## Research and figure development
 
 From the early component drawings to the second public edition, the work progressed through **module illustration, detection-path organization, code/result checks, additional-dataset evaluation, and manuscript figure refinement**. The drawings developed alongside the research: each figure needed to explain the data flow and match the implementation.
+
+<details>
+<summary><strong>Research milestones: early drawings to the second release</strong></summary>
 
 | Period | Main development |
 |---|---|
@@ -172,6 +203,8 @@ From the early component drawings to the second public edition, the work progres
 | October 9, 2026 | Published bilingual second-edition documentation, added manuscript repository links, and connected the earlier research and figure records. |
 
 ¹ Early months reflect retained figure-file timestamps, not inferred experiment-completion dates. The full timeline identifies each date source.
+
+</details>
 
 The figure workflow combines **PowerPoint → PDF** architecture exports, **LaTeX/TikZ** assembly of BCSG panels, **Matplotlib** quantitative plots, and panels from predictions and detection-conditioned Grad-CAM. The detailed record includes before/after colors and explains the problems addressed in each revision.
 
@@ -197,6 +230,14 @@ Custom deformable operators need a compatible compiled environment. ONNX/TensorR
 
 The code builds on [Ultralytics](https://github.com/ultralytics/ultralytics) and [MMCV](https://github.com/open-mmlab/mmcv). AAD uses modified DCNv2 sampling; CIHF builds on SBA-style interaction; PASF uses ASFF-style spatial scale weighting and coordinate-attention-style directional refinement. The [development record](docs/fpo/development.md#design-lineage) distinguishes these antecedents from the modifications implemented here.
 
-The associated manuscript is **FPO-YOLO: A Feature Propagation-Oriented Detector for Small Objects in UAV Imagery**. Publication metadata is not provided in this release. Until a formal citation is available, reference this repository together with the commit used in your experiment.
+The associated manuscript is **FPO-YOLO: A Feature Propagation-Oriented Detector for Small Objects in UAV Imagery**. Publication metadata is not provided in this release. Until a formal manuscript citation is available, use the software reference below and record the commit used in your experiment. This entry cites the repository, not a published article.
+
+```bibtex
+@misc{fpoyolo2026code,
+  title = {FPO-YOLO: Open-source implementation},
+  year = {2026},
+  howpublished = {\url{https://github.com/Azure-127031/FPO-yolo}}
+}
+```
 
 This repository is distributed under the [AGPL-3.0 license](LICENSE). Please retain upstream notices. For issues, include the commit, environment versions, dataset YAML, command, and full traceback; do not attach private data or credentials.
