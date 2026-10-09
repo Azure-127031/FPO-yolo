@@ -198,3 +198,7 @@ calibration_*.npy
 *.heic
 *.ico
 *.raw
+
+# FPO-YOLO research documentation assets
+!docs/fpo/assets/*.png
+!docs/fpo/assets/*.pdf
