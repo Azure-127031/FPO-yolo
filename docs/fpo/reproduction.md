@@ -54,7 +54,7 @@ Create an AI-TOD-v2 YAML from the **v2 annotations**, preserving the public part
 |---|---|---|
 | Initialization | Model YAML / random initialization | Model YAML / random initialization |
 | Image size | 640×640 | 640×640 |
-| Batch size | 16 | 15 |
+| Training batch | VisDrone YOLO11n/s:16; FPO-n/s:12; UAVDT:16 | 15 |
 | Maximum epochs | 200 | 200 |
 | Early-stopping patience | 100 | 50 |
 | Optimizer | SGD | `auto` |
@@ -63,24 +63,24 @@ Create an AI-TOD-v2 YAML from the **v2 annotations**, preserving the public part
 | Learning-rate schedule | Linear (`cos_lr=False`) | Trainer defaults |
 | AMP during training | Enabled | Enabled |
 | Mosaic closure | Last 10 epochs | Last 10 epochs |
-| Seed | Public training script defaults to 0 | Reported runs use 0 |
+| Seed | Reported n/s runs:0 | Reported runs:0 |
 | Evaluation precision | FP16 | FP32 |
 | Evaluation batch | 16 | 15 |
 | Confidence filter | 0.001 in detection evaluator defaults | 0.001 explicitly |
 | NMS IoU / max detections | 0.7 / 300 | 0.7 / 300 |
 | Test-time augmentation | Disabled | Disabled |
 
-The default seed in `scripts/train.py` is a release setting; it should not be used to infer undocumented seeds for historical runs. Structural comparisons retain the CIoU regression objective. FPO-YOLO uses the inherited classification and distribution-focal-loss training machinery; there is no separate custom training loss introduced by these modules.
+The recorded primary n/s runs use seed 0. The training script accepts `--batch`; use 12 for the VisDrone FPO-n/s records and 16 for UAVDT. These settings do not retrospectively define unrecorded historical experiments. Structural comparisons retain the CIoU regression objective. FPO-YOLO uses the inherited classification and distribution-focal-loss training machinery; there is no separate custom training loss introduced by these modules.
 
 ### VisDrone and UAVDT entry points
 
 ```bash
-python scripts/train.py --scale s --data configs/visdrone.yaml --device 0 --project runs/fpo_yolo --name fpo_yolo_s_e200
+python scripts/train.py --scale s --data configs/visdrone.yaml --batch 12 --device 0 --project runs/fpo_yolo --name fpo_yolo_s_e200
 python scripts/val.py --weights runs/fpo_yolo/fpo_yolo_s_e200/weights/best.pt --data configs/visdrone.yaml --device 0 --split val
 python scripts/val.py --weights runs/fpo_yolo/fpo_yolo_s_e200/weights/best.pt --data configs/visdrone.yaml --device 0 --split test --save-json
 ```
 
-Replace the data argument with `configs/uavdt.yaml` for the UAVDT training/validation setting. Use `--split val` for the UAVDT result table. A repeated run may receive a suffixed output directory; always use its actual checkpoint path.
+For UAVDT, use `--data configs/uavdt.yaml --batch 16`. Use `--split val` for the UAVDT result table. A repeated run may receive a suffixed output directory; always use its actual checkpoint path.
 
 The training script accepts n/s/m/l/x scales. Reported results cover n/s/m/l on VisDrone and n/s on UAVDT and AI-TOD-v2. Configuration support alone does not establish measured performance for other scales.
 
@@ -131,7 +131,7 @@ YOLO(str(best)).val(
 
 In this checkout, detection fitness uses validation mAP50–95, as defined in `ultralytics/utils/metrics.py`. This controls `best.pt` selection. The test set must not influence checkpoint or hyperparameter selection. The four reported AI-TOD-v2 runs completed 200 epochs.
 
-The displayed AI-TOD-v2 results use the shared Ultralytics evaluator. They are not directly comparable to a trainval-trained detector evaluated with 1,500 detections per image or an independently implemented tiny-size COCO metric. AP75 and official tiny-size breakdowns are not reported in this release.
+The displayed AI-TOD-v2 results use the shared Ultralytics evaluator. They are not directly comparable to a trainval-trained detector evaluated with 1,500 detections per image or an independently implemented tiny-size COCO metric. AP75 and separate COCO size AP are now available in the [result snapshot](data/reported-results.json). The size analysis uses maxDets=300 and is not the official 1,500-detection benchmark protocol.
 
 ## Match the released architecture
 

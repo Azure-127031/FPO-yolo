@@ -54,7 +54,7 @@ AI-TOD-v2 使用 **v2 标注**制作 YAML，保留公开子集归属和类别映
 |---|---|---|
 | 初始化 | 模型 YAML / 随机初始化 | 模型 YAML / 随机初始化 |
 | 输入尺寸 | 640×640 | 640×640 |
-| Batch | 16 | 15 |
+| 训练 batch | VisDrone YOLO11n/s：16，FPO-n/s：12；UAVDT：16 | 15 |
 | 最大轮数 | 200 | 200 |
 | 早停 patience | 100 | 50 |
 | 优化器 | SGD | `auto` |
@@ -63,24 +63,24 @@ AI-TOD-v2 使用 **v2 标注**制作 YAML，保留公开子集归属和类别映
 | 学习率变化 | 线性，`cos_lr=False` | 训练器默认 |
 | 训练 AMP | 开启 | 开启 |
 | Mosaic 关闭 | 最后 10 轮 | 最后 10 轮 |
-| Seed | 公开训练入口默认为 0 | 汇报实验使用 0 |
+| Seed | 已核验主要 n/s 实验使用 0 | 汇报实验使用 0 |
 | 评估精度 | FP16 | FP32 |
 | 评估 batch | 16 | 15 |
 | 置信度过滤 | 检测评估器默认 0.001 | 显式设为 0.001 |
 | NMS IoU / 最大检测数 | 0.7 / 300 | 0.7 / 300 |
 | 测试时增强 | 关闭 | 关闭 |
 
-`scripts/train.py` 的 seed 默认值属于发布版本设置，不能用于反推未记录的历史实验种子。结构对照保留 CIoU 回归目标，FPO-YOLO 沿用分类与分布焦点损失训练流程，不因这些模块另行引入自定义训练损失。
+已核验主要 n/s 实验使用 seed0。`scripts/train.py` 支持 `--batch`，VisDrone FPO-n/s 对应12，UAVDT 对应16；不将这些设置追溯至未记录的其他历史实验。结构对照保留 CIoU 回归目标，FPO-YOLO 沿用分类与分布焦点损失训练流程，不因这些模块另行引入自定义训练损失。
 
 ### VisDrone 与 UAVDT 运行入口
 
 ```bash
-python scripts/train.py --scale s --data configs/visdrone.yaml --device 0 --project runs/fpo_yolo --name fpo_yolo_s_e200
+python scripts/train.py --scale s --data configs/visdrone.yaml --batch 12 --device 0 --project runs/fpo_yolo --name fpo_yolo_s_e200
 python scripts/val.py --weights runs/fpo_yolo/fpo_yolo_s_e200/weights/best.pt --data configs/visdrone.yaml --device 0 --split val
 python scripts/val.py --weights runs/fpo_yolo/fpo_yolo_s_e200/weights/best.pt --data configs/visdrone.yaml --device 0 --split test --save-json
 ```
 
-UAVDT 训练/验证时将 data 替换为 `configs/uavdt.yaml`，表中结果使用 `--split val`。重复运行可能获得带后缀目录，必须使用本次实际权重路径。
+UAVDT 训练使用 `--data configs/uavdt.yaml --batch 16`，表中结果使用 `--split val`。重复运行可能获得带后缀目录，必须使用本次实际权重路径。
 
 训练入口支持 n/s/m/l/x。已汇报结果覆盖 VisDrone 的 n/s/m/l，以及 UAVDT、AI-TOD-v2 的 n/s；支持配置不代表其他尺度已有实测结果。
 
@@ -131,7 +131,7 @@ YOLO(str(best)).val(
 
 当前仓库的检测 fitness 使用验证集 mAP50–95，定义见 `ultralytics/utils/metrics.py`，据此选择 `best.pt`。测试集不能参与权重或超参数选择。四组已汇报 AI-TOD-v2 实验均完成 200 轮。
 
-本页 AI-TOD-v2 结果采用共同 Ultralytics 评估器，不能与 trainval 训练、每图最多 1,500 检测或独立 tiny 尺寸 COCO 评估的结果直接等同。本版本未汇报 AP75 或官方 tiny 尺寸分组指标。
+本页 AI-TOD-v2 结果采用共同 Ultralytics 评估器，不能与 trainval 训练、每图最多 1,500 检测或独立 tiny 尺寸 COCO 评估的结果直接等同。AP75 和单独计算的 COCO 尺寸 AP 已加入[结果快照](data/reported-results.json)。尺寸分析采用 maxDets=300，与官方1,500检测结果协议分别说明。
 
 ## 对齐公开结构
 

@@ -6,7 +6,7 @@
 
 FPO-YOLO 基于 YOLO11，采用步长为 4、8、16 的 **P2–P4 预测层**，沿同一高分辨率检测路径协调局部特征调制、自适应下采样、跨层上下文聚合与逐位置尺度选择。
 
-在 **VisDrone2019 验证集**上，FPO-YOLO-s 取得 **47.9% mAP50 / 29.2% mAP50–95**，较 YOLO11s 提高 **9.1 / 6.0 个百分点**，参数量减少 **56.2%**。使用验证集选择的同一权重，在 **test-dev** 上取得 **38.9% / 22.8%**。参数量下降伴随估算运算量增加，运行速度还取决于数据集和评估设置。
+在 **VisDrone2019 验证集**上，FPO-YOLO-s 取得 **48.1% mAP50 / 29.2% mAP50–95**，较 YOLO11s 提高 **9.3 / 6.1 个百分点**，参数量减少 **56.2%**。使用验证集选择的同一权重，在 **test-dev** 上取得 **38.9% / 22.7%**。参数量下降伴随估算运算量增加，运行速度还取决于数据集和评估设置。
 
 <p align="center">
   <img src="docs/fpo/assets/architecture.png" alt="FPO-YOLO 整体结构、P2–P4 检测路径及 BCSG 容器" width="100%">
@@ -26,6 +26,7 @@ FPO-YOLO 基于 YOLO11，采用步长为 4、8、16 的 **P2–P4 预测层**，
 
 ## 更新记录
 
+- **2026-10-11：**同步当前论文的验证/test-dev 结果及完整模型引用，补充 AP75、COCO 尺寸 AP、更新图件及[机器可读结果快照](docs/fpo/data/reported-results.json)。
 - **2026-10-10：**精修中英文阅读入口与使用示例，补充同尺度 test-dev 对照和软件引用，保留完整代码、实验与图件演进记录。
 - **2026-10-09：**完善第二版中英文文档，加入 UAVDT、AI-TOD-v2 结果及各自评估设置；补全代码改进说明、实验历程、早期时间节点和图件制作过程。
 - **2026-09-29：**发布基于 Ultralytics 8.3.237 的 FPO-YOLO 实现。
@@ -54,9 +55,10 @@ BCSG 改变后续阶段可用的特征响应，AAD 改变分辨率降低时这�
 
 | 模型 | Val mAP50 | Val mAP50–95 | Test-dev mAP50 | Test-dev mAP50–95 | 参数量（M） | GFLOPs |
 |---|---:|---:|---:|---:|---:|---:|
-| YOLO11s | 38.8 | 23.2 | 31.4 | 18.0 | 9.43 | 21.6 |
-| FPO-YOLO-n | 40.9 | 24.7 | 33.1 | 19.2 | 1.34 | 13.5 |
-| FPO-YOLO-s | 47.9 | 29.2 | 38.9 | 22.8 | 4.13 | 36.5 |
+| YOLO11n | 32.3 | 18.7 | 26.0 | 14.6 | 2.58 | 6.3 |
+| FPO-YOLO-n | 41.2 | 24.6 | 33.0 | 19.1 | 1.34 | 13.5 |
+| YOLO11s | 38.8 | 23.2 | 31.7 | 18.3 | 9.43 | 21.6 |
+| FPO-YOLO-s | 48.1 | 29.2 | 38.9 | 22.7 | 4.13 | 36.5 |
 | FPO-YOLO-m | 51.5 | 31.8 | 41.1 | 24.3 | 14.84 | 121.0 |
 | FPO-YOLO-l | 52.2 | 32.4 | 41.4 | 24.5 | 16.50 | 138.0 |
 
@@ -68,9 +70,9 @@ BCSG 改变后续阶段可用的特征响应，AAD 改变分辨率降低时这�
 | 模型 | Test-dev mAP50 | Test-dev mAP50–95 | 参数量（M） | GFLOPs |
 |---|---:|---:|---:|---:|
 | YOLO11n | 26.0 | 14.6 | 2.58 | 6.3 |
-| FPO-YOLO-n | **33.1** | **19.2** | **1.34** | 13.5 |
-| YOLO11s | 31.4 | 18.0 | 9.43 | 21.6 |
-| FPO-YOLO-s | **38.9** | **22.8** | **4.13** | 36.5 |
+| FPO-YOLO-n | **33.0** | **19.1** | **1.34** | 13.5 |
+| YOLO11s | 31.7 | 18.3 | 9.43 | 21.6 |
+| FPO-YOLO-s | **38.9** | **22.7** | **4.13** | 36.5 |
 | YOLO11m | 35.3 | 20.8 | 20.04 | 67.7 |
 | FPO-YOLO-m | **41.1** | **24.3** | **14.84** | 121.0 |
 | YOLO11l | 36.4 | 21.7 | 25.32 | 87.3 |
@@ -85,7 +87,7 @@ BCSG 改变后续阶段可用的特征响应，AAD 改变分辨率降低时这�
 | 模型 | Val mAP50 | Val mAP50–95 |
 |---|---:|---:|
 | YOLO11n | 37.0 | 18.7 |
-| FPO-YOLO-n | 44.0 | 23.5 |
+| FPO-YOLO-n | 44.1 | 23.4 |
 | YOLO11s | 44.4 | 24.9 |
 | FPO-YOLO-s | 52.0 | 28.3 |
 
@@ -100,7 +102,52 @@ BCSG 改变后续阶段可用的特征响应，AAD 改变分辨率降低时这�
 | YOLO11s | 45.5 | 19.9 |
 | FPO-YOLO-s | 54.4 | 25.0 |
 
-保留公开的 **11,214 / 2,804 / 14,018** train/val/test 划分。仅以 `train` 训练，使用 `val` 选择权重，以 FP32、`max_det=300` 在 `test` 上评估。上述结果采用相同的 Ultralytics 评估器，不是官方 tiny 尺寸分组 COCO 评估的重实现。UAVDT 和 AI-TOD-v2 均**分别训练模型**，不表示 VisDrone 权重的零样本跨域迁移。[各数据集复现设置 →](docs/fpo/reproduction.zh-CN.md#数据集与划分)
+保留公开的 **11,214 / 2,804 / 14,018** train/val/test 划分。仅以 `train` 训练，使用 `val` 选择权重，以 FP32、`max_det=300` 在 `test` 上评估。总体精度与 AP75 采用 Ultralytics；COCO 尺寸 AP 在下文单列，同样使用 300 个检测结果上限。UAVDT 和 AI-TOD-v2 均**分别训练模型**，不表示 VisDrone 权重的零样本跨域迁移。[各数据集复现设置 →](docs/fpo/reproduction.zh-CN.md#数据集与划分)
+
+### AP75 与目标尺寸结果
+
+严格 IoU 指标采用同一组选定检查点。完整精度值、逐类别 AP、权重哈希及评估设置见[结果 JSON](docs/fpo/data/reported-results.json)。
+
+| 模型 | VisDrone 验证 mAP75 | UAVDT 验证 mAP75 | AI-TOD-v2 测试 mAP75 |
+|---|---:|---:|---:|
+| YOLO11n | 18.6 | 14.7 | 10.3 |
+| FPO-YOLO-n | 25.1 | 21.4 | 14.5 |
+| YOLO11s | 23.6 | 24.2 | 14.3 |
+| FPO-YOLO-s | 30.2 | 25.7 | 19.2 |
+
+<details>
+<summary><strong>COCO 尺寸分组 AP</strong></summary>
+
+**VisDrone2019 validation**
+
+| 模型 | AP_small | AP_medium | AP_large |
+|---|---:|---:|---:|
+| YOLO11n | 8.7 | 26.9 | 35.2 |
+| FPO-YOLO-n | 14.9 | 33.3 | 43.6 |
+| YOLO11s | 12.4 | 32.9 | 42.4 |
+| FPO-YOLO-s | 18.8 | 38.7 | 44.4 |
+
+**UAVDT validation**
+
+| 模型 | AP_small | AP_medium | AP_large |
+|---|---:|---:|---:|
+| YOLO11n | 10.5 | 26.1 | 38.0 |
+| FPO-YOLO-n | 12.5 | 28.0 | 27.9 |
+| YOLO11s | 10.1 | 25.2 | 37.9 |
+| FPO-YOLO-s | 12.7 | 39.7 | 35.6 |
+
+**AI-TOD-v2 test**
+
+| 模型 | AP_verytiny | AP_tiny | AP_small | AP_medium |
+|---|---:|---:|---:|---:|
+| YOLO11n | 3.5 | 12.7 | 20.9 | 28.2 |
+| FPO-YOLO-n | 7.1 | 18.0 | 25.2 | 31.6 |
+| YOLO11s | 4.7 | 17.1 | 26.8 | 37.0 |
+| FPO-YOLO-s | 10.3 | 23.2 | 31.7 | 38.8 |
+
+尺寸 AP 使用原图面积、COCOeval 和 maxDets=300。VisDrone/UAVDT 分界为32²/96²，AI-TOD-v2 为8²/16²/32²；这些数值与 Ultralytics AP 分别报告。
+
+</details>
 
 ### 受控设计对照
 
@@ -158,10 +205,10 @@ VisDrone2019/
 ### 3. 从随机初始化训练
 
 ```bash
-python scripts/train.py --scale s --data configs/visdrone.yaml --device 0
+python scripts/train.py --scale s --data configs/visdrone.yaml --batch 12 --device 0
 ```
 
-公开训练入口从 YAML 初始化，使用 `imgsz=640`、batch 16、最多 200 轮、SGD、patience 100、AMP、`close_mosaic=10`，默认 seed 为 0。该 seed 是发布版本默认设置，不追溯断言所有历史实验均使用了相同种子。此入口对应 VisDrone/UAVDT 设置；**AI-TOD-v2 应使用单独的设置**。
+公开训练入口从 YAML 初始化，使用 `imgsz=640`、最多 200 轮、SGD、patience100、AMP、`close_mosaic=10` 及 seed0。已报告 VisDrone FPO-n/s 使用 `--batch 12`，UAVDT 使用 `--batch 16`，上例对应 VisDrone。脚本仍默认16，并支持显式覆盖批大小。此入口对应 VisDrone/UAVDT 设置；**AI-TOD-v2 应使用单独的设置**。
 
 ### 4. 评估验证集选择的权重
 

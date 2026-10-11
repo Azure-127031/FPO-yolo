@@ -35,6 +35,7 @@ The drawing archive predates the GitHub repository. This timeline brings togethe
 | 2026-10-07 | Results and annotated feedback | Incorporated AI-TOD-v2 testing and detection-conditioned visualization, then revised the problem–design–evidence connection, formulas, abbreviations, captions, and references against peer annotations. | Supplementary manuscript and feedback records |
 | 2026-10-08 | Figure semantics and appearance | Checked strides, feature names, and shortcuts; compared redraws with local revisions, retained the original shapes/routes, and recolored individual modules. Organized the accuracy–complexity plot by mAP50. | Figure revisions and geometry checks |
 | 2026-10-09 | Second-edition documentation | Prepared English/Chinese manuscript versions with repository links and released the second-edition documentation in [`d367e8e`](https://github.com/Azure-127031/FPO-yolo/commit/d367e8e). This expanded history builds on that release using existing code, assets, and results. | Commit and bilingual delivery records |
+| 2026-10-11 | Checkpoint evaluation and result synchronization | Evaluated existing checkpoints with AP75 and COCO size AP; synchronized the manuscript, numerical snapshot, and figures without new training or splits. | Evaluation records and current manuscript |
 
 ## How the work developed
 
@@ -104,7 +105,7 @@ The following configurations use the same CIHF reference and the same VisDrone t
 | CIHF + AAD + BCSG | 46.5 | 28.3 |
 | CIHF + BCSG + PASF | 46.6 | 28.6 |
 | CIHF + AAD + PASF | 46.4 | 28.3 |
-| CIHF + AAD + BCSG + PASF | 47.9 | 29.2 |
+| CIHF + AAD + BCSG + PASF | 48.1 | 29.2 |
 
 Relative to CIHF, the isolated mAP50–95 improvements are 0.4, 1.0, and 0.7 points. Their sum is 2.1 points, whereas the full model gains 2.6 points. Removing AAD, BCSG, or PASF from the full configuration reduces mAP50–95 by 0.6, 0.9, and 0.9 points, respectively. These observations support non-additive, complementary effects **within this tested configuration**. They do not constitute multi-seed significance testing or a full four-factor interaction analysis.
 
@@ -159,6 +160,14 @@ The accuracy–complexity bubble plot uses **parameters on the horizontal axis, 
 ![Accuracy–complexity comparison using mAP50](assets/accuracy-complexity.png)
 
 [Plot PDF](assets/accuracy-complexity.pdf)
+
+### AP and object-size updates
+
+The current plots and tables use the [October 11 result snapshot](data/reported-results.json). VisDrone class-wise AP uses the primary YOLO11s/FPO-YOLO-s checkpoints; the qualitative asset is synchronized to this same comparison. Size distributions use original-image box dimensions and retain the three fixed evaluation splits.
+
+![VisDrone class-wise AP50](assets/per-class.png)
+
+![Original-image object-size distributions](assets/object-size-distribution.png)
 
 ## Detection and response visualization
 

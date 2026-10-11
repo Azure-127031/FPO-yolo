@@ -1,0 +1,2366 @@
+{
+  "schema_version": 1,
+  "updated": "2026-10-11",
+  "units": "percent for accuracy; millions for parameters; GFLOPs at 640 input",
+  "native_evaluation": {
+    "VisDrone2019_validation": {
+      "YOLO11n": {
+        "metrics_percent": {
+          "precision": 42.643834370030106,
+          "recall": 32.76130571784205,
+          "mAP50": 32.31524771214661,
+          "mAP50-95": 18.66664166522247,
+          "mAP75": 18.588537747859437
+        },
+        "per_class_percent": [
+          {
+            "class_id": 0,
+            "class_name": "pedestrian",
+            "AP50": 34.697378559996,
+            "AP75": 10.08601769206595,
+            "AP": 14.72905580438672
+          },
+          {
+            "class_id": 1,
+            "class_name": "people",
+            "AP50": 26.93397031215318,
+            "AP75": 4.269961990232701,
+            "AP": 9.595732160247048
+          },
+          {
+            "class_id": 2,
+            "class_name": "bicycle",
+            "AP50": 8.488948520160628,
+            "AP75": 2.061499058000594,
+            "AP": 3.2982066066489026
+          },
+          {
+            "class_id": 3,
+            "class_name": "car",
+            "AP50": 75.16061912126699,
+            "AP75": 57.79344505742902,
+            "AP": 51.776610749018914
+          },
+          {
+            "class_id": 4,
+            "class_name": "van",
+            "AP50": 37.77988737106948,
+            "AP75": 29.374629553120325,
+            "AP": 26.13124289145845
+          },
+          {
+            "class_id": 5,
+            "class_name": "truck",
+            "AP50": 27.3773310636395,
+            "AP75": 18.71079103465055,
+            "AP": 17.261025861289106
+          },
+          {
+            "class_id": 6,
+            "class_name": "tricycle",
+            "AP50": 19.697251225563008,
+            "AP75": 10.316777488975337,
+            "AP": 10.585086567460884
+          },
+          {
+            "class_id": 7,
+            "class_name": "awning-tricycle",
+            "AP50": 11.59587950358318,
+            "AP75": 8.132390826907795,
+            "AP": 7.2778014026589135
+          },
+          {
+            "class_id": 8,
+            "class_name": "bus",
+            "AP50": 45.56358558643922,
+            "AP75": 36.21094166949608,
+            "AP": 31.475016218244583
+          },
+          {
+            "class_id": 9,
+            "class_name": "motor",
+            "AP50": 35.85762585759492,
+            "AP75": 8.928923107716013,
+            "AP": 14.536638390811202
+          }
+        ],
+        "weight_sha256": "672b5b17fa66fc107987f8c34cd1d7ffca2c7444acdb483433f867a39f3353a8",
+        "images": 548,
+        "evaluated_annotations": 38759,
+        "evaluation": {
+          "split": "val",
+          "imgsz": 640,
+          "batch": 16,
+          "half": true,
+          "rect": true,
+          "conf": 0.001,
+          "iou": 0.7,
+          "max_det": 300,
+          "augment": false
+        },
+        "ground_truth_sha256": "d323bf897dff586aebf814c2bc19ef541a2200c9666dadfd6569a868ccd2a7e7"
+      },
+      "FPO-YOLO-n": {
+        "metrics_percent": {
+          "precision": 50.34074527434458,
+          "recall": 39.99856842113945,
+          "mAP50": 41.248923036289206,
+          "mAP50-95": 24.62552142632973,
+          "mAP75": 25.144386932874514
+        },
+        "per_class_percent": [
+          {
+            "class_id": 0,
+            "class_name": "pedestrian",
+            "AP50": 47.07241414350623,
+            "AP75": 17.573507407060813,
+            "AP": 22.30429278550328
+          },
+          {
+            "class_id": 1,
+            "class_name": "people",
+            "AP50": 39.04509772925664,
+            "AP75": 9.305924522948269,
+            "AP": 15.92315973798592
+          },
+          {
+            "class_id": 2,
+            "class_name": "bicycle",
+            "AP50": 13.309005458811363,
+            "AP75": 4.11274669748998,
+            "AP": 5.772900522712216
+          },
+          {
+            "class_id": 3,
+            "class_name": "car",
+            "AP50": 82.44229622356403,
+            "AP75": 65.9396892696999,
+            "AP": 58.53160380040865
+          },
+          {
+            "class_id": 4,
+            "class_name": "van",
+            "AP50": 47.70048234200186,
+            "AP75": 39.210199910058144,
+            "AP": 34.14237839955299
+          },
+          {
+            "class_id": 5,
+            "class_name": "truck",
+            "AP50": 34.49763620385325,
+            "AP75": 26.111632453731882,
+            "AP": 23.2533331127037
+          },
+          {
+            "class_id": 6,
+            "class_name": "tricycle",
+            "AP50": 28.048294969954306,
+            "AP75": 16.705433814105778,
+            "AP": 16.113450414802788
+          },
+          {
+            "class_id": 7,
+            "class_name": "awning-tricycle",
+            "AP50": 15.870821451061035,
+            "AP75": 11.742182555334155,
+            "AP": 10.233136184584337
+          },
+          {
+            "class_id": 8,
+            "class_name": "bus",
+            "AP50": 56.21792630253607,
+            "AP75": 43.97414689460106,
+            "AP": 37.920352279271874
+          },
+          {
+            "class_id": 9,
+            "class_name": "motor",
+            "AP50": 48.28525553834736,
+            "AP75": 16.768405803715165,
+            "AP": 22.06060702577152
+          }
+        ],
+        "weight_sha256": "7bcdc0e6d9eb2a189b205c83f5eb5c2b9ee86f75b74b34197ba7441e9294168c",
+        "images": 548,
+        "evaluated_annotations": 38759,
+        "evaluation": {
+          "split": "val",
+          "imgsz": 640,
+          "batch": 16,
+          "half": true,
+          "rect": true,
+          "conf": 0.001,
+          "iou": 0.7,
+          "max_det": 300,
+          "augment": false
+        },
+        "ground_truth_sha256": "dc85cfc677c5d351b7079d8dc4b06b33c2eae67edd982c86350a76e992974ed6"
+      },
+      "YOLO11s": {
+        "metrics_percent": {
+          "precision": 49.835463439183606,
+          "recall": 38.12360912123091,
+          "mAP50": 38.78748071140122,
+          "mAP50-95": 23.18728153906927,
+          "mAP75": 23.5766504232159
+        },
+        "per_class_percent": [
+          {
+            "class_id": 0,
+            "class_name": "pedestrian",
+            "AP50": 41.63923570230967,
+            "AP75": 14.324144453476087,
+            "AP": 18.86711508132649
+          },
+          {
+            "class_id": 1,
+            "class_name": "people",
+            "AP50": 31.444302010024817,
+            "AP75": 6.078907040270113,
+            "AP": 11.875356702928714
+          },
+          {
+            "class_id": 2,
+            "class_name": "bicycle",
+            "AP50": 12.470435556207407,
+            "AP75": 3.4493633323793476,
+            "AP": 5.346711273787216
+          },
+          {
+            "class_id": 3,
+            "class_name": "car",
+            "AP50": 79.34097045667274,
+            "AP75": 63.51983872712687,
+            "AP": 56.52701275895977
+          },
+          {
+            "class_id": 4,
+            "class_name": "van",
+            "AP50": 45.410955799649535,
+            "AP75": 36.02858376127857,
+            "AP": 31.99413038413889
+          },
+          {
+            "class_id": 5,
+            "class_name": "truck",
+            "AP50": 36.20963079407735,
+            "AP75": 24.938183967931398,
+            "AP": 23.202071600609614
+          },
+          {
+            "class_id": 6,
+            "class_name": "tricycle",
+            "AP50": 26.821103222369597,
+            "AP75": 14.750154263593704,
+            "AP": 14.799804920456753
+          },
+          {
+            "class_id": 7,
+            "class_name": "awning-tricycle",
+            "AP50": 15.350720254908845,
+            "AP75": 11.043241467598678,
+            "AP": 9.622671570489075
+          },
+          {
+            "class_id": 8,
+            "class_name": "bus",
+            "AP50": 55.726570353061675,
+            "AP75": 47.92101786513021,
+            "AP": 40.34506038196888
+          },
+          {
+            "class_id": 9,
+            "class_name": "motor",
+            "AP50": 43.460882964730544,
+            "AP75": 13.713069353374,
+            "AP": 19.292880716027287
+          }
+        ],
+        "weight_sha256": "63aaf2b18497b85a1c1cacc60d4608bd27c7fd7de0ed1874e44fcf33965593f8",
+        "images": 548,
+        "evaluated_annotations": 38759,
+        "evaluation": {
+          "split": "val",
+          "imgsz": 640,
+          "batch": 16,
+          "half": true,
+          "rect": true,
+          "conf": 0.001,
+          "iou": 0.7,
+          "max_det": 300,
+          "augment": false
+        },
+        "ground_truth_sha256": "80e7a15a7d44b1badb7fa24545055d26ee3b4af8351c65f2bba6e91ca6df7b78"
+      },
+      "FPO-YOLO-s": {
+        "metrics_percent": {
+          "precision": 57.544171561285964,
+          "recall": 45.84459238315709,
+          "mAP50": 48.126576180687266,
+          "mAP50-95": 29.24951972678393,
+          "mAP75": 30.233235863348114
+        },
+        "per_class_percent": [
+          {
+            "class_id": 0,
+            "class_name": "pedestrian",
+            "AP50": 54.995309550721075,
+            "AP75": 22.468728083672676,
+            "AP": 26.780612675272042
+          },
+          {
+            "class_id": 1,
+            "class_name": "people",
+            "AP50": 44.63084531816662,
+            "AP75": 11.18005963814624,
+            "AP": 18.58337583700424
+          },
+          {
+            "class_id": 2,
+            "class_name": "bicycle",
+            "AP50": 21.220530036969002,
+            "AP75": 8.528106194713764,
+            "AP": 10.39677450349788
+          },
+          {
+            "class_id": 3,
+            "class_name": "car",
+            "AP50": 85.42044239922444,
+            "AP75": 70.06430356543659,
+            "AP": 61.98821375908713
+          },
+          {
+            "class_id": 4,
+            "class_name": "van",
+            "AP50": 51.88437806795837,
+            "AP75": 42.88592306467988,
+            "AP": 37.243115788383555
+          },
+          {
+            "class_id": 5,
+            "class_name": "truck",
+            "AP50": 42.96389300387043,
+            "AP75": 31.315158124337827,
+            "AP": 28.33417416930249
+          },
+          {
+            "class_id": 6,
+            "class_name": "tricycle",
+            "AP50": 37.52771684185851,
+            "AP75": 22.248155089980703,
+            "AP": 21.315767305845494
+          },
+          {
+            "class_id": 7,
+            "class_name": "awning-tricycle",
+            "AP50": 21.15731691178599,
+            "AP75": 14.630890765641036,
+            "AP": 13.225531686473499
+          },
+          {
+            "class_id": 8,
+            "class_name": "bus",
+            "AP50": 64.50454337781476,
+            "AP75": 57.025885012878575,
+            "AP": 47.205361111001395
+          },
+          {
+            "class_id": 9,
+            "class_name": "motor",
+            "AP50": 56.96078629850354,
+            "AP75": 21.985149093993783,
+            "AP": 27.42227043197151
+          }
+        ],
+        "weight_sha256": "17e93ac9ebd1ba2de5d08c086164f4185d2a0d55e3f5858569873dc090579116",
+        "images": 548,
+        "evaluated_annotations": 38759,
+        "evaluation": {
+          "split": "val",
+          "imgsz": 640,
+          "batch": 16,
+          "half": true,
+          "rect": true,
+          "conf": 0.001,
+          "iou": 0.7,
+          "max_det": 300,
+          "augment": false
+        },
+        "ground_truth_sha256": "94b14792703c93532ebc9d036f6986f23f24a2b9340e1bce946bea3b5d81f221"
+      }
+    },
+    "VisDrone2019_test_dev": {
+      "YOLO11n": {
+        "metrics_percent": {
+          "precision": 37.29376874713091,
+          "recall": 28.92542739059077,
+          "mAP50": 26.00089144985499,
+          "mAP50-95": 14.558736215076687,
+          "mAP75": 14.601591731913716
+        },
+        "per_class_percent": [
+          {
+            "class_id": 0,
+            "class_name": "pedestrian",
+            "AP50": 21.96731515948183,
+            "AP75": 4.843080251998983,
+            "AP": 8.397715791300477
+          },
+          {
+            "class_id": 1,
+            "class_name": "people",
+            "AP50": 11.2083352498794,
+            "AP75": 1.6210680220887632,
+            "AP": 3.8515597801754833
+          },
+          {
+            "class_id": 2,
+            "class_name": "bicycle",
+            "AP50": 5.739992768400184,
+            "AP75": 1.1557900770944263,
+            "AP": 2.1196465939817277
+          },
+          {
+            "class_id": 3,
+            "class_name": "car",
+            "AP50": 65.81300703781217,
+            "AP75": 44.49941796202969,
+            "AP": 40.677990610815925
+          },
+          {
+            "class_id": 4,
+            "class_name": "van",
+            "AP50": 29.999741892016768,
+            "AP75": 22.48432593787668,
+            "AP": 19.483356989532435
+          },
+          {
+            "class_id": 5,
+            "class_name": "truck",
+            "AP50": 28.902963453878343,
+            "AP75": 18.038560430569234,
+            "AP": 17.176622440195235
+          },
+          {
+            "class_id": 6,
+            "class_name": "tricycle",
+            "AP50": 9.981251815792328,
+            "AP75": 4.284706876973108,
+            "AP": 5.044317559893817
+          },
+          {
+            "class_id": 7,
+            "class_name": "awning-tricycle",
+            "AP50": 14.622115790049218,
+            "AP75": 7.284014693280081,
+            "AP": 7.638890162217664
+          },
+          {
+            "class_id": 8,
+            "class_name": "bus",
+            "AP50": 48.80883039847633,
+            "AP75": 36.919634570317356,
+            "AP": 32.496332338331754
+          },
+          {
+            "class_id": 9,
+            "class_name": "motor",
+            "AP50": 22.965360932763332,
+            "AP75": 4.88531849690882,
+            "AP": 8.700929884322331
+          }
+        ],
+        "weight_sha256": "672b5b17fa66fc107987f8c34cd1d7ffca2c7444acdb483433f867a39f3353a8",
+        "images": 1610,
+        "evaluated_annotations": 75102,
+        "evaluation": {
+          "split": "test",
+          "imgsz": 640,
+          "batch": 16,
+          "half": true,
+          "rect": true,
+          "conf": 0.001,
+          "iou": 0.7,
+          "max_det": 300,
+          "augment": false
+        },
+        "ground_truth_sha256": "855b9a53766201fc0419d1772cd94f9d49e028271652842e684cf68c24f37702"
+      },
+      "FPO-YOLO-n": {
+        "metrics_percent": {
+          "precision": 44.35995072648809,
+          "recall": 34.71188025186623,
+          "mAP50": 33.01814280591771,
+          "mAP50-95": 19.054799321416024,
+          "mAP75": 19.542126959841262
+        },
+        "per_class_percent": [
+          {
+            "class_id": 0,
+            "class_name": "pedestrian",
+            "AP50": 31.57232717730951,
+            "AP75": 8.503695892754694,
+            "AP": 13.01550054551538
+          },
+          {
+            "class_id": 1,
+            "class_name": "people",
+            "AP50": 19.958866777185648,
+            "AP75": 3.2956753988219853,
+            "AP": 7.311303265000454
+          },
+          {
+            "class_id": 2,
+            "class_name": "bicycle",
+            "AP50": 9.91452738708257,
+            "AP75": 2.78272167544064,
+            "AP": 4.288666246897715
+          },
+          {
+            "class_id": 3,
+            "class_name": "car",
+            "AP50": 74.40333122148517,
+            "AP75": 53.594214818366424,
+            "AP": 47.74415134149373
+          },
+          {
+            "class_id": 4,
+            "class_name": "van",
+            "AP50": 38.46998702766233,
+            "AP75": 30.36180170609842,
+            "AP": 25.78559745605194
+          },
+          {
+            "class_id": 5,
+            "class_name": "truck",
+            "AP50": 34.55170363815333,
+            "AP75": 24.185365650465226,
+            "AP": 21.751966078124145
+          },
+          {
+            "class_id": 6,
+            "class_name": "tricycle",
+            "AP50": 17.06731566097282,
+            "AP75": 9.911883613998077,
+            "AP": 9.572532714150663
+          },
+          {
+            "class_id": 7,
+            "class_name": "awning-tricycle",
+            "AP50": 18.29545507137563,
+            "AP75": 10.525558285240457,
+            "AP": 10.294284733464794
+          },
+          {
+            "class_id": 8,
+            "class_name": "bus",
+            "AP50": 56.10259300184026,
+            "AP75": 44.337084211500176,
+            "AP": 38.34771475534681
+          },
+          {
+            "class_id": 9,
+            "class_name": "motor",
+            "AP50": 29.84532109610982,
+            "AP75": 7.923268345726529,
+            "AP": 12.436276078114568
+          }
+        ],
+        "weight_sha256": "7bcdc0e6d9eb2a189b205c83f5eb5c2b9ee86f75b74b34197ba7441e9294168c",
+        "images": 1610,
+        "evaluated_annotations": 75102,
+        "evaluation": {
+          "split": "test",
+          "imgsz": 640,
+          "batch": 16,
+          "half": true,
+          "rect": true,
+          "conf": 0.001,
+          "iou": 0.7,
+          "max_det": 300,
+          "augment": false
+        },
+        "ground_truth_sha256": "b2c814786c2bce92b220b4f770c77984accb09a360b3b3b8c091c0e70fe60f66"
+      },
+      "YOLO11s": {
+        "metrics_percent": {
+          "precision": 43.5136191867598,
+          "recall": 33.842333555250164,
+          "mAP50": 31.71074202150695,
+          "mAP50-95": 18.254527703665698,
+          "mAP75": 18.5426324452685
+        },
+        "per_class_percent": [
+          {
+            "class_id": 0,
+            "class_name": "pedestrian",
+            "AP50": 26.959675864824234,
+            "AP75": 6.50733594700669,
+            "AP": 10.787587853138872
+          },
+          {
+            "class_id": 1,
+            "class_name": "people",
+            "AP50": 13.81375583564125,
+            "AP75": 2.2175194362351274,
+            "AP": 4.754776361515079
+          },
+          {
+            "class_id": 2,
+            "class_name": "bicycle",
+            "AP50": 8.407939388183305,
+            "AP75": 2.224280852969945,
+            "AP": 3.2976001151842778
+          },
+          {
+            "class_id": 3,
+            "class_name": "car",
+            "AP50": 71.11306315699852,
+            "AP75": 50.77609942647152,
+            "AP": 45.57518881249078
+          },
+          {
+            "class_id": 4,
+            "class_name": "van",
+            "AP50": 37.115190772815296,
+            "AP75": 27.923753293054798,
+            "AP": 24.522394405891117
+          },
+          {
+            "class_id": 5,
+            "class_name": "truck",
+            "AP50": 38.69876625641839,
+            "AP75": 26.09848027387902,
+            "AP": 24.02468974246149
+          },
+          {
+            "class_id": 6,
+            "class_name": "tricycle",
+            "AP50": 16.880719505724777,
+            "AP75": 9.125533976044242,
+            "AP": 8.90607314088061
+          },
+          {
+            "class_id": 7,
+            "class_name": "awning-tricycle",
+            "AP50": 19.656970041923408,
+            "AP75": 10.390284990821662,
+            "AP": 10.680129591934177
+          },
+          {
+            "class_id": 8,
+            "class_name": "bus",
+            "AP50": 56.10821746407551,
+            "AP75": 43.41329303922345,
+            "AP": 38.60924528254082
+          },
+          {
+            "class_id": 9,
+            "class_name": "motor",
+            "AP50": 28.353121928464773,
+            "AP75": 6.749743216978551,
+            "AP": 11.38759173061972
+          }
+        ],
+        "weight_sha256": "63aaf2b18497b85a1c1cacc60d4608bd27c7fd7de0ed1874e44fcf33965593f8",
+        "images": 1610,
+        "evaluated_annotations": 75102,
+        "evaluation": {
+          "split": "test",
+          "imgsz": 640,
+          "batch": 16,
+          "half": true,
+          "rect": true,
+          "conf": 0.001,
+          "iou": 0.7,
+          "max_det": 300,
+          "augment": false
+        },
+        "ground_truth_sha256": "6737c21cfc93dc53f61d863ead3221eadd278ded1e2553afe05200081ee63ba1"
+      },
+      "FPO-YOLO-s": {
+        "metrics_percent": {
+          "precision": 51.59650906130744,
+          "recall": 39.381436774710735,
+          "mAP50": 38.85159616334362,
+          "mAP50-95": 22.7488186786715,
+          "mAP75": 23.581409668008888
+        },
+        "per_class_percent": [
+          {
+            "class_id": 0,
+            "class_name": "pedestrian",
+            "AP50": 36.815460390391486,
+            "AP75": 10.582493303051594,
+            "AP": 15.484783130220464
+          },
+          {
+            "class_id": 1,
+            "class_name": "people",
+            "AP50": 23.98525496046993,
+            "AP75": 4.2647491149419725,
+            "AP": 8.878659234859189
+          },
+          {
+            "class_id": 2,
+            "class_name": "bicycle",
+            "AP50": 14.1079561086138,
+            "AP75": 3.9053004705724343,
+            "AP": 6.028823541666785
+          },
+          {
+            "class_id": 3,
+            "class_name": "car",
+            "AP50": 78.57814780335644,
+            "AP75": 57.919410097380485,
+            "AP": 51.487354429412676
+          },
+          {
+            "class_id": 4,
+            "class_name": "van",
+            "AP50": 44.17001897374445,
+            "AP75": 35.2385599896513,
+            "AP": 30.049479578919414
+          },
+          {
+            "class_id": 5,
+            "class_name": "truck",
+            "AP50": 44.38831691319039,
+            "AP75": 32.47849826829987,
+            "AP": 28.712041402017647
+          },
+          {
+            "class_id": 6,
+            "class_name": "tricycle",
+            "AP50": 23.780691729758598,
+            "AP75": 15.371011003987084,
+            "AP": 13.37826753449431
+          },
+          {
+            "class_id": 7,
+            "class_name": "awning-tricycle",
+            "AP50": 23.57774672963646,
+            "AP75": 15.9057848329517,
+            "AP": 14.15431451885729
+          },
+          {
+            "class_id": 8,
+            "class_name": "bus",
+            "AP50": 60.87448807676018,
+            "AP75": 48.88206558633769,
+            "AP": 42.88181658992703
+          },
+          {
+            "class_id": 9,
+            "class_name": "motor",
+            "AP50": 38.23787994751447,
+            "AP75": 11.26622401291474,
+            "AP": 16.432646826340207
+          }
+        ],
+        "weight_sha256": "17e93ac9ebd1ba2de5d08c086164f4185d2a0d55e3f5858569873dc090579116",
+        "images": 1610,
+        "evaluated_annotations": 75102,
+        "evaluation": {
+          "split": "test",
+          "imgsz": 640,
+          "batch": 16,
+          "half": true,
+          "rect": true,
+          "conf": 0.001,
+          "iou": 0.7,
+          "max_det": 300,
+          "augment": false
+        },
+        "ground_truth_sha256": "24eca58a434291e06b1fbb667c768bce344f956a0793bc14e47520c2072a8b17"
+      }
+    },
+    "UAVDT_validation": {
+      "YOLO11n": {
+        "metrics_percent": {
+          "precision": 42.36571188422131,
+          "recall": 40.261723613718495,
+          "mAP50": 37.02787807418923,
+          "mAP50-95": 18.653281783161134,
+          "mAP75": 14.716757371286091
+        },
+        "per_class_percent": [
+          {
+            "class_id": 0,
+            "class_name": "car",
+            "AP50": 79.39796885877459,
+            "AP75": 31.602186788559226,
+            "AP": 39.35616460674502
+          },
+          {
+            "class_id": 1,
+            "class_name": "truck",
+            "AP50": 27.48799703632899,
+            "AP75": 8.902324658573919,
+            "AP": 13.968281930758113
+          },
+          {
+            "class_id": 2,
+            "class_name": "bus",
+            "AP50": 4.197668327464136,
+            "AP75": 3.6457606667251294,
+            "AP": 2.6353988119802674
+          }
+        ],
+        "weight_sha256": "4801eb96f999bb93c51292eac9d53757a35a38cb85166cb57d9866d01aa7a948",
+        "images": 3610,
+        "evaluated_annotations": 38137,
+        "evaluation": {
+          "split": "val",
+          "imgsz": 640,
+          "batch": 16,
+          "half": true,
+          "rect": true,
+          "conf": 0.001,
+          "iou": 0.7,
+          "max_det": 300,
+          "augment": false
+        },
+        "ground_truth_sha256": "b7bff7790fbc3ce5aae39f50ad8f00c318cd50f55eb378508a6d4987e1f6f909"
+      },
+      "FPO-YOLO-n": {
+        "metrics_percent": {
+          "precision": 58.521511805746954,
+          "recall": 34.81717014007666,
+          "mAP50": 44.06902897223526,
+          "mAP50-95": 23.446259037997567,
+          "mAP75": 21.44947902322488
+        },
+        "per_class_percent": [
+          {
+            "class_id": 0,
+            "class_name": "car",
+            "AP50": 80.34072385251079,
+            "AP75": 41.11843294512047,
+            "AP": 43.442323468955216
+          },
+          {
+            "class_id": 1,
+            "class_name": "truck",
+            "AP50": 47.062472184551,
+            "AP75": 19.774397714620974,
+            "AP": 24.030025104676366
+          },
+          {
+            "class_id": 2,
+            "class_name": "bus",
+            "AP50": 4.803890879643993,
+            "AP75": 3.4556064099332007,
+            "AP": 2.8664285403611123
+          }
+        ],
+        "weight_sha256": "b4160200e106af26cb5ace271fd9203d815ab96efc2712dbb09daa42309fb5cd",
+        "images": 3610,
+        "evaluated_annotations": 38137,
+        "evaluation": {
+          "split": "val",
+          "imgsz": 640,
+          "batch": 16,
+          "half": true,
+          "rect": true,
+          "conf": 0.001,
+          "iou": 0.7,
+          "max_det": 300,
+          "augment": false
+        },
+        "ground_truth_sha256": "e000383eb9a03a4ed8349d76ad4191b5c0de61aa45e47d1200ae5615f62575d1"
+      },
+      "YOLO11s": {
+        "metrics_percent": {
+          "precision": 48.0068676126483,
+          "recall": 41.68514795250253,
+          "mAP50": 44.41143835474441,
+          "mAP50-95": 24.86994873806216,
+          "mAP75": 24.16375269156098
+        },
+        "per_class_percent": [
+          {
+            "class_id": 0,
+            "class_name": "car",
+            "AP50": 81.73812382993893,
+            "AP75": 42.97336619352105,
+            "AP": 44.84275634381548
+          },
+          {
+            "class_id": 1,
+            "class_name": "truck",
+            "AP50": 42.481861287429076,
+            "AP75": 22.18873713991694,
+            "AP": 23.73423890050164
+          },
+          {
+            "class_id": 2,
+            "class_name": "bus",
+            "AP50": 9.014329946865221,
+            "AP75": 7.329154741244947,
+            "AP": 6.032850969869353
+          }
+        ],
+        "weight_sha256": "8345be3ebf6f2e129ed89f7384831a4b863420e448c95dc100351cfe26ab5e4d",
+        "images": 3610,
+        "evaluated_annotations": 38137,
+        "evaluation": {
+          "split": "val",
+          "imgsz": 640,
+          "batch": 16,
+          "half": true,
+          "rect": true,
+          "conf": 0.001,
+          "iou": 0.7,
+          "max_det": 300,
+          "augment": false
+        },
+        "ground_truth_sha256": "01564cd9c53735f6d367d8953c8e59691f9bb2cd0ef4e72cc0bbd652d35c26cc"
+      },
+      "FPO-YOLO-s": {
+        "metrics_percent": {
+          "precision": 77.4129773168489,
+          "recall": 43.614423803631006,
+          "mAP50": 52.03118029968057,
+          "mAP50-95": 28.26426684214204,
+          "mAP75": 25.71434860011414
+        },
+        "per_class_percent": [
+          {
+            "class_id": 0,
+            "class_name": "car",
+            "AP50": 79.43181451756385,
+            "AP75": 35.5824474154821,
+            "AP": 40.96964831433066
+          },
+          {
+            "class_id": 1,
+            "class_name": "truck",
+            "AP50": 43.56237105731888,
+            "AP75": 12.05799446676135,
+            "AP": 21.494312475974414
+          },
+          {
+            "class_id": 2,
+            "class_name": "bus",
+            "AP50": 33.09935532415898,
+            "AP75": 29.502603918098956,
+            "AP": 22.328839736121036
+          }
+        ],
+        "weight_sha256": "e2aae0e3c64f5325777208af629b263c33c5ba62f1fdb373e40564874b663403",
+        "images": 3610,
+        "evaluated_annotations": 38137,
+        "evaluation": {
+          "split": "val",
+          "imgsz": 640,
+          "batch": 16,
+          "half": true,
+          "rect": true,
+          "conf": 0.001,
+          "iou": 0.7,
+          "max_det": 300,
+          "augment": false
+        },
+        "ground_truth_sha256": "f8b165ee257a5f21efd4213437c74a95cd506c25008e9db0580ccabcbcf21c49"
+      }
+    },
+    "AI_TOD_v2_test": {
+      "YOLO11n": {
+        "metrics_percent": {
+          "precision": 59.791560822401514,
+          "recall": 33.71323953953005,
+          "mAP50": 34.38335668387988,
+          "mAP50-95": 14.825680017887297,
+          "mAP75": 10.321422803660276
+        },
+        "per_class_percent": [
+          {
+            "class_id": 0,
+            "class_name": "airplane",
+            "AP50": 40.28605230500448,
+            "AP75": 16.47767745332315,
+            "AP": 19.508851830087952
+          },
+          {
+            "class_id": 1,
+            "class_name": "bridge",
+            "AP50": 14.359039159809145,
+            "AP75": 1.3692335648305112,
+            "AP": 4.384476776183645
+          },
+          {
+            "class_id": 2,
+            "class_name": "storage-tank",
+            "AP50": 63.09192800310439,
+            "AP75": 28.77079463448923,
+            "AP": 32.21072028060777
+          },
+          {
+            "class_id": 3,
+            "class_name": "ship",
+            "AP50": 59.253915456153194,
+            "AP75": 18.85742987663385,
+            "AP": 26.229191450397476
+          },
+          {
+            "class_id": 4,
+            "class_name": "swimming-pool",
+            "AP50": 12.503507992112048,
+            "AP75": 2.5569541758037584,
+            "AP": 5.049642780820183
+          },
+          {
+            "class_id": 5,
+            "class_name": "vehicle",
+            "AP50": 63.006398606321156,
+            "AP75": 12.24313260971577,
+            "AP": 24.305416710170515
+          },
+          {
+            "class_id": 6,
+            "class_name": "person",
+            "AP50": 21.559036404454552,
+            "AP75": 2.2961601144859234,
+            "AP": 6.701669410490978
+          },
+          {
+            "class_id": 7,
+            "class_name": "wind-mill",
+            "AP50": 1.0069755440801273,
+            "AP75": 0.0,
+            "AP": 0.2154709043398525
+          }
+        ],
+        "weight_sha256": "527f49d4623b149a2b12bc5f0dc8b3e10379889564ef270fe4aa0f5778c296d8",
+        "images": 14018,
+        "evaluated_annotations": 376116,
+        "evaluation": {
+          "split": "test",
+          "imgsz": 640,
+          "batch": 15,
+          "half": false,
+          "rect": true,
+          "conf": 0.001,
+          "iou": 0.7,
+          "max_det": 300,
+          "augment": false
+        },
+        "ground_truth_sha256": "b24dc6992d44958525403af268f103f30f101801270d14ecbd1a84ef3683ca8e"
+      },
+      "FPO-YOLO-n": {
+        "metrics_percent": {
+          "precision": 66.64870718147338,
+          "recall": 42.62553566057735,
+          "mAP50": 43.1009185090111,
+          "mAP50-95": 19.45729205218084,
+          "mAP75": 14.453806976526934
+        },
+        "per_class_percent": [
+          {
+            "class_id": 0,
+            "class_name": "airplane",
+            "AP50": 49.33008627871971,
+            "AP75": 23.502253676211268,
+            "AP": 25.30596602932756
+          },
+          {
+            "class_id": 1,
+            "class_name": "bridge",
+            "AP50": 22.01382906805642,
+            "AP75": 2.0879237677567457,
+            "AP": 7.1048389722199605
+          },
+          {
+            "class_id": 2,
+            "class_name": "storage-tank",
+            "AP50": 74.47057225406685,
+            "AP75": 37.722879954723375,
+            "AP": 39.832938320418606
+          },
+          {
+            "class_id": 3,
+            "class_name": "ship",
+            "AP50": 67.43451610341577,
+            "AP75": 25.17380104066995,
+            "AP": 32.02483431111262
+          },
+          {
+            "class_id": 4,
+            "class_name": "swimming-pool",
+            "AP50": 22.775226582978476,
+            "AP75": 4.196346540111589,
+            "AP": 8.947996972336933
+          },
+          {
+            "class_id": 5,
+            "class_name": "vehicle",
+            "AP50": 72.87121639442354,
+            "AP75": 18.04783703196831,
+            "AP": 30.434883273218155
+          },
+          {
+            "class_id": 6,
+            "class_name": "person",
+            "AP50": 34.04191837898814,
+            "AP75": 4.763193308144923,
+            "AP": 11.524179976802303
+          },
+          {
+            "class_id": 7,
+            "class_name": "wind-mill",
+            "AP50": 1.8699830114398983,
+            "AP75": 0.1362204926292884,
+            "AP": 0.4826985620106
+          }
+        ],
+        "weight_sha256": "a321f4bb9f273b43cb6a734792320327af21b6e9a35168bc8697c7b52861b4cd",
+        "images": 14018,
+        "evaluated_annotations": 376116,
+        "evaluation": {
+          "split": "test",
+          "imgsz": 640,
+          "batch": 15,
+          "half": false,
+          "rect": true,
+          "conf": 0.001,
+          "iou": 0.7,
+          "max_det": 300,
+          "augment": false
+        },
+        "ground_truth_sha256": "14449beb9aed4c52efb18a77e55f07f71082583c3b6e8ccd1514af813149b88d"
+      },
+      "YOLO11s": {
+        "metrics_percent": {
+          "precision": 57.09562060944098,
+          "recall": 45.37684899944935,
+          "mAP50": 45.5280882216526,
+          "mAP50-95": 19.874060966959032,
+          "mAP75": 14.343643120574251
+        },
+        "per_class_percent": [
+          {
+            "class_id": 0,
+            "class_name": "airplane",
+            "AP50": 61.26370529330389,
+            "AP75": 26.934516488386663,
+            "AP": 30.14096862959769
+          },
+          {
+            "class_id": 1,
+            "class_name": "bridge",
+            "AP50": 32.68379750336059,
+            "AP75": 2.8962083164822396,
+            "AP": 10.436007463396928
+          },
+          {
+            "class_id": 2,
+            "class_name": "storage-tank",
+            "AP50": 69.09236289363778,
+            "AP75": 34.74210988386939,
+            "AP": 36.682503993694915
+          },
+          {
+            "class_id": 3,
+            "class_name": "ship",
+            "AP50": 65.7703564386844,
+            "AP75": 24.32322918677005,
+            "AP": 30.79783326814201
+          },
+          {
+            "class_id": 4,
+            "class_name": "swimming-pool",
+            "AP50": 29.993854888308256,
+            "AP75": 6.1687316048202305,
+            "AP": 11.963386925176518
+          },
+          {
+            "class_id": 5,
+            "class_name": "vehicle",
+            "AP50": 68.51428084509415,
+            "AP75": 16.074797264093245,
+            "AP": 28.026387399559226
+          },
+          {
+            "class_id": 6,
+            "class_name": "person",
+            "AP50": 29.501270328015718,
+            "AP75": 3.4874254875387956,
+            "AP": 9.507065612316943
+          },
+          {
+            "class_id": 7,
+            "class_name": "wind-mill",
+            "AP50": 7.405077582816036,
+            "AP75": 0.12212673263340636,
+            "AP": 1.438334443788009
+          }
+        ],
+        "weight_sha256": "8e1462b0ca26ee9ba7568a4f416d299417ef8e25abb095269c4a1930fb12fb20",
+        "images": 14018,
+        "evaluated_annotations": 376116,
+        "evaluation": {
+          "split": "test",
+          "imgsz": 640,
+          "batch": 15,
+          "half": false,
+          "rect": true,
+          "conf": 0.001,
+          "iou": 0.7,
+          "max_det": 300,
+          "augment": false
+        },
+        "ground_truth_sha256": "00056012e7eff53ae984de41ad0dd8efccfc91b589b5267108c51c822e92b59f"
+      },
+      "FPO-YOLO-s": {
+        "metrics_percent": {
+          "precision": 60.53054616757363,
+          "recall": 56.32842084122398,
+          "mAP50": 54.397469084726005,
+          "mAP50-95": 24.95141698227684,
+          "mAP75": 19.174807417417256
+        },
+        "per_class_percent": [
+          {
+            "class_id": 0,
+            "class_name": "airplane",
+            "AP50": 69.23099239600528,
+            "AP75": 32.9458858047515,
+            "AP": 35.766197247902255
+          },
+          {
+            "class_id": 1,
+            "class_name": "bridge",
+            "AP50": 42.62248723713803,
+            "AP75": 5.954662353955561,
+            "AP": 15.610959625597353
+          },
+          {
+            "class_id": 2,
+            "class_name": "storage-tank",
+            "AP50": 76.0224714966286,
+            "AP75": 41.25064171891083,
+            "AP": 41.81247335723061
+          },
+          {
+            "class_id": 3,
+            "class_name": "ship",
+            "AP50": 74.93560418046754,
+            "AP75": 34.77561863381847,
+            "AP": 38.613887837762704
+          },
+          {
+            "class_id": 4,
+            "class_name": "swimming-pool",
+            "AP50": 36.92656340700739,
+            "AP75": 8.39069154608646,
+            "AP": 14.950061363885247
+          },
+          {
+            "class_id": 5,
+            "class_name": "vehicle",
+            "AP50": 76.88340962286743,
+            "AP75": 22.508335352813756,
+            "AP": 33.81246868697651
+          },
+          {
+            "class_id": 6,
+            "class_name": "person",
+            "AP50": 42.390829824960385,
+            "AP75": 6.89147864806218,
+            "AP": 15.00569865860755
+          },
+          {
+            "class_id": 7,
+            "class_name": "wind-mill",
+            "AP50": 16.167394512733384,
+            "AP75": 0.6811452809392657,
+            "AP": 4.03958908025249
+          }
+        ],
+        "weight_sha256": "17c899beac7d1d1923f95bb95a4361d94ccb6541e24041195447b906297d65f8",
+        "images": 14018,
+        "evaluated_annotations": 376116,
+        "evaluation": {
+          "split": "test",
+          "imgsz": 640,
+          "batch": 15,
+          "half": false,
+          "rect": true,
+          "conf": 0.001,
+          "iou": 0.7,
+          "max_det": 300,
+          "augment": false
+        },
+        "ground_truth_sha256": "7fc3b96c811ef135c29fd31223fa79c33dadab17e5d904c56bb3b29582e47b96"
+      }
+    }
+  },
+  "coco_size_evaluation": {
+    "VisDrone2019_validation": {
+      "YOLO11n": {
+        "AP_percent": {
+          "all": 17.28021793251491,
+          "small": 8.673499446831762,
+          "medium": 26.907415316881796,
+          "large": 35.189661051758556
+        },
+        "evaluator": "COCOeval",
+        "max_dets": [
+          1,
+          100,
+          300
+        ],
+        "area_ranges_pixels_squared": {
+          "all": [
+            0,
+            10000000000.0
+          ],
+          "small": [
+            0,
+            1024
+          ],
+          "medium": [
+            1024,
+            9216
+          ],
+          "large": [
+            9216,
+            10000000000.0
+          ]
+        },
+        "ground_truth_semantic_sha256": "2dcb20655b21d21497e3fb36f34adf6b2b049f62fa858ef283757ca7935339f4",
+        "weight_sha256": "672b5b17fa66fc107987f8c34cd1d7ffca2c7444acdb483433f867a39f3353a8"
+      },
+      "FPO-YOLO-n": {
+        "AP_percent": {
+          "all": 23.0992166344661,
+          "small": 14.851333726540306,
+          "medium": 33.26833557922423,
+          "large": 43.606309717645345
+        },
+        "evaluator": "COCOeval",
+        "max_dets": [
+          1,
+          100,
+          300
+        ],
+        "area_ranges_pixels_squared": {
+          "all": [
+            0,
+            10000000000.0
+          ],
+          "small": [
+            0,
+            1024
+          ],
+          "medium": [
+            1024,
+            9216
+          ],
+          "large": [
+            9216,
+            10000000000.0
+          ]
+        },
+        "ground_truth_semantic_sha256": "2dcb20655b21d21497e3fb36f34adf6b2b049f62fa858ef283757ca7935339f4",
+        "weight_sha256": "7bcdc0e6d9eb2a189b205c83f5eb5c2b9ee86f75b74b34197ba7441e9294168c"
+      },
+      "YOLO11s": {
+        "AP_percent": {
+          "all": 21.63529178683302,
+          "small": 12.428001934639521,
+          "medium": 32.85671437279119,
+          "large": 42.412590083626235
+        },
+        "evaluator": "COCOeval",
+        "max_dets": [
+          1,
+          100,
+          300
+        ],
+        "area_ranges_pixels_squared": {
+          "all": [
+            0,
+            10000000000.0
+          ],
+          "small": [
+            0,
+            1024
+          ],
+          "medium": [
+            1024,
+            9216
+          ],
+          "large": [
+            9216,
+            10000000000.0
+          ]
+        },
+        "ground_truth_semantic_sha256": "2dcb20655b21d21497e3fb36f34adf6b2b049f62fa858ef283757ca7935339f4",
+        "weight_sha256": "63aaf2b18497b85a1c1cacc60d4608bd27c7fd7de0ed1874e44fcf33965593f8"
+      },
+      "FPO-YOLO-s": {
+        "AP_percent": {
+          "all": 27.570320582892073,
+          "small": 18.822555059440372,
+          "medium": 38.7422004611928,
+          "large": 44.423890201837565
+        },
+        "evaluator": "COCOeval",
+        "max_dets": [
+          1,
+          100,
+          300
+        ],
+        "area_ranges_pixels_squared": {
+          "all": [
+            0,
+            10000000000.0
+          ],
+          "small": [
+            0,
+            1024
+          ],
+          "medium": [
+            1024,
+            9216
+          ],
+          "large": [
+            9216,
+            10000000000.0
+          ]
+        },
+        "ground_truth_semantic_sha256": "2dcb20655b21d21497e3fb36f34adf6b2b049f62fa858ef283757ca7935339f4",
+        "weight_sha256": "17e93ac9ebd1ba2de5d08c086164f4185d2a0d55e3f5858569873dc090579116"
+      }
+    },
+    "UAVDT_validation": {
+      "YOLO11n": {
+        "AP_percent": {
+          "all": 17.40589820312202,
+          "small": 10.486385510869386,
+          "medium": 26.119643941833708,
+          "large": 37.989290296243844
+        },
+        "evaluator": "COCOeval",
+        "max_dets": [
+          1,
+          100,
+          300
+        ],
+        "area_ranges_pixels_squared": {
+          "all": [
+            0,
+            10000000000.0
+          ],
+          "small": [
+            0,
+            1024
+          ],
+          "medium": [
+            1024,
+            9216
+          ],
+          "large": [
+            9216,
+            10000000000.0
+          ]
+        },
+        "ground_truth_semantic_sha256": "44ac04827c0e29e825aa20a345e6ae0532a1b0f99e7fcc1d3b5ee63b10dd3ad1",
+        "weight_sha256": "4801eb96f999bb93c51292eac9d53757a35a38cb85166cb57d9866d01aa7a948"
+      },
+      "FPO-YOLO-n": {
+        "AP_percent": {
+          "all": 19.03178128547232,
+          "small": 12.472904299622217,
+          "medium": 28.012748648626058,
+          "large": 27.870953163363037
+        },
+        "evaluator": "COCOeval",
+        "max_dets": [
+          1,
+          100,
+          300
+        ],
+        "area_ranges_pixels_squared": {
+          "all": [
+            0,
+            10000000000.0
+          ],
+          "small": [
+            0,
+            1024
+          ],
+          "medium": [
+            1024,
+            9216
+          ],
+          "large": [
+            9216,
+            10000000000.0
+          ]
+        },
+        "ground_truth_semantic_sha256": "44ac04827c0e29e825aa20a345e6ae0532a1b0f99e7fcc1d3b5ee63b10dd3ad1",
+        "weight_sha256": "b4160200e106af26cb5ace271fd9203d815ab96efc2712dbb09daa42309fb5cd"
+      },
+      "YOLO11s": {
+        "AP_percent": {
+          "all": 17.02777095142725,
+          "small": 10.093567824128174,
+          "medium": 25.150278883124162,
+          "large": 37.89135866136442
+        },
+        "evaluator": "COCOeval",
+        "max_dets": [
+          1,
+          100,
+          300
+        ],
+        "area_ranges_pixels_squared": {
+          "all": [
+            0,
+            10000000000.0
+          ],
+          "small": [
+            0,
+            1024
+          ],
+          "medium": [
+            1024,
+            9216
+          ],
+          "large": [
+            9216,
+            10000000000.0
+          ]
+        },
+        "ground_truth_semantic_sha256": "44ac04827c0e29e825aa20a345e6ae0532a1b0f99e7fcc1d3b5ee63b10dd3ad1",
+        "weight_sha256": "8345be3ebf6f2e129ed89f7384831a4b863420e448c95dc100351cfe26ab5e4d"
+      },
+      "FPO-YOLO-s": {
+        "AP_percent": {
+          "all": 26.298515796208278,
+          "small": 12.680204984397534,
+          "medium": 39.69760240979059,
+          "large": 35.56154421995284
+        },
+        "evaluator": "COCOeval",
+        "max_dets": [
+          1,
+          100,
+          300
+        ],
+        "area_ranges_pixels_squared": {
+          "all": [
+            0,
+            10000000000.0
+          ],
+          "small": [
+            0,
+            1024
+          ],
+          "medium": [
+            1024,
+            9216
+          ],
+          "large": [
+            9216,
+            10000000000.0
+          ]
+        },
+        "ground_truth_semantic_sha256": "44ac04827c0e29e825aa20a345e6ae0532a1b0f99e7fcc1d3b5ee63b10dd3ad1",
+        "weight_sha256": "e2aae0e3c64f5325777208af629b263c33c5ba62f1fdb373e40564874b663403"
+      }
+    },
+    "AI_TOD_v2_test": {
+      "YOLO11n": {
+        "AP_percent": {
+          "all": 14.369100243406251,
+          "verytiny": 3.5365128945663704,
+          "tiny": 12.711060194487981,
+          "small": 20.884675394515455,
+          "medium": 28.217005818010023
+        },
+        "evaluator": "COCOeval",
+        "max_dets": [
+          1,
+          100,
+          300
+        ],
+        "area_ranges_pixels_squared": {
+          "all": [
+            0,
+            10000000000.0
+          ],
+          "verytiny": [
+            0,
+            64
+          ],
+          "tiny": [
+            64,
+            256
+          ],
+          "small": [
+            256,
+            1024
+          ],
+          "medium": [
+            1024,
+            10000000000.0
+          ]
+        },
+        "ground_truth_semantic_sha256": "7845c5c6284c96af81c62aa9666ae2841a881157c619f1e7c6118faf3f19fc61",
+        "weight_sha256": "527f49d4623b149a2b12bc5f0dc8b3e10379889564ef270fe4aa0f5778c296d8"
+      },
+      "FPO-YOLO-n": {
+        "AP_percent": {
+          "all": 18.975793127585465,
+          "verytiny": 7.145851111646865,
+          "tiny": 18.032829253941728,
+          "small": 25.17927705563785,
+          "medium": 31.586021281492272
+        },
+        "evaluator": "COCOeval",
+        "max_dets": [
+          1,
+          100,
+          300
+        ],
+        "area_ranges_pixels_squared": {
+          "all": [
+            0,
+            10000000000.0
+          ],
+          "verytiny": [
+            0,
+            64
+          ],
+          "tiny": [
+            64,
+            256
+          ],
+          "small": [
+            256,
+            1024
+          ],
+          "medium": [
+            1024,
+            10000000000.0
+          ]
+        },
+        "ground_truth_semantic_sha256": "7845c5c6284c96af81c62aa9666ae2841a881157c619f1e7c6118faf3f19fc61",
+        "weight_sha256": "a321f4bb9f273b43cb6a734792320327af21b6e9a35168bc8697c7b52861b4cd"
+      },
+      "YOLO11s": {
+        "AP_percent": {
+          "all": 19.192554220625606,
+          "verytiny": 4.714842371437028,
+          "tiny": 17.125881900495408,
+          "small": 26.843221895414977,
+          "medium": 37.02931406163955
+        },
+        "evaluator": "COCOeval",
+        "max_dets": [
+          1,
+          100,
+          300
+        ],
+        "area_ranges_pixels_squared": {
+          "all": [
+            0,
+            10000000000.0
+          ],
+          "verytiny": [
+            0,
+            64
+          ],
+          "tiny": [
+            64,
+            256
+          ],
+          "small": [
+            256,
+            1024
+          ],
+          "medium": [
+            1024,
+            10000000000.0
+          ]
+        },
+        "ground_truth_semantic_sha256": "7845c5c6284c96af81c62aa9666ae2841a881157c619f1e7c6118faf3f19fc61",
+        "weight_sha256": "8e1462b0ca26ee9ba7568a4f416d299417ef8e25abb095269c4a1930fb12fb20"
+      },
+      "FPO-YOLO-s": {
+        "AP_percent": {
+          "all": 24.24108898475995,
+          "verytiny": 10.32354139155137,
+          "tiny": 23.168372640123795,
+          "small": 31.72702813593926,
+          "medium": 38.75743964831843
+        },
+        "evaluator": "COCOeval",
+        "max_dets": [
+          1,
+          100,
+          300
+        ],
+        "area_ranges_pixels_squared": {
+          "all": [
+            0,
+            10000000000.0
+          ],
+          "verytiny": [
+            0,
+            64
+          ],
+          "tiny": [
+            64,
+            256
+          ],
+          "small": [
+            256,
+            1024
+          ],
+          "medium": [
+            1024,
+            10000000000.0
+          ]
+        },
+        "ground_truth_semantic_sha256": "7845c5c6284c96af81c62aa9666ae2841a881157c619f1e7c6118faf3f19fc61",
+        "weight_sha256": "17c899beac7d1d1923f95bb95a4361d94ccb6541e24041195447b906297d65f8"
+      }
+    }
+  },
+  "reported_complexity": {
+    "YOLO11n": {
+      "parameters_M": 2.58,
+      "GFLOPs": 6.3
+    },
+    "FPO-YOLO-n": {
+      "parameters_M": 1.34,
+      "GFLOPs": 13.5
+    },
+    "YOLO11s": {
+      "parameters_M": 9.43,
+      "GFLOPs": 21.6
+    },
+    "FPO-YOLO-s": {
+      "parameters_M": 4.13,
+      "GFLOPs": 36.5
+    },
+    "FPO-YOLO-m": {
+      "parameters_M": 14.84,
+      "GFLOPs": 121.0
+    },
+    "FPO-YOLO-l": {
+      "parameters_M": 16.5,
+      "GFLOPs": 138.0
+    }
+  },
+  "training_settings": {
+    "VisDrone2019": {
+      "YOLO11n": {
+        "epochs": 200,
+        "batch": 16,
+        "optimizer": "SGD",
+        "patience": 100,
+        "seed": 0,
+        "deterministic": true,
+        "amp": true,
+        "close_mosaic": 10,
+        "lr0": 0.01,
+        "lrf": 0.01,
+        "momentum": 0.937,
+        "weight_decay": 0.0005,
+        "warmup_epochs": 3.0
+      },
+      "FPO-YOLO-n": {
+        "epochs": 200,
+        "batch": 12,
+        "optimizer": "SGD",
+        "patience": 100,
+        "seed": 0,
+        "deterministic": true,
+        "amp": true,
+        "close_mosaic": 10,
+        "lr0": 0.01,
+        "lrf": 0.01,
+        "momentum": 0.937,
+        "weight_decay": 0.0005,
+        "warmup_epochs": 3.0
+      },
+      "YOLO11s": {
+        "epochs": 200,
+        "batch": 16,
+        "optimizer": "SGD",
+        "patience": 100,
+        "seed": 0,
+        "deterministic": true,
+        "amp": true,
+        "close_mosaic": 10,
+        "lr0": 0.01,
+        "lrf": 0.01,
+        "momentum": 0.937,
+        "weight_decay": 0.0005,
+        "warmup_epochs": 3.0
+      },
+      "FPO-YOLO-s": {
+        "epochs": 200,
+        "batch": 12,
+        "optimizer": "SGD",
+        "patience": 100,
+        "seed": 0,
+        "deterministic": true,
+        "amp": true,
+        "close_mosaic": 10,
+        "lr0": 0.01,
+        "lrf": 0.01,
+        "momentum": 0.937,
+        "weight_decay": 0.0005,
+        "warmup_epochs": 3.0
+      }
+    },
+    "UAVDT": {
+      "YOLO11n": {
+        "epochs": 200,
+        "batch": 16,
+        "optimizer": "SGD",
+        "patience": 100,
+        "seed": 0,
+        "deterministic": true,
+        "amp": true,
+        "close_mosaic": 10,
+        "lr0": 0.01,
+        "lrf": 0.01,
+        "momentum": 0.937,
+        "weight_decay": 0.0005,
+        "warmup_epochs": 3.0
+      },
+      "FPO-YOLO-n": {
+        "epochs": 200,
+        "batch": 16,
+        "optimizer": "SGD",
+        "patience": 100,
+        "seed": 0,
+        "deterministic": true,
+        "amp": true,
+        "close_mosaic": 10,
+        "lr0": 0.01,
+        "lrf": 0.01,
+        "momentum": 0.937,
+        "weight_decay": 0.0005,
+        "warmup_epochs": 3.0
+      },
+      "YOLO11s": {
+        "epochs": 200,
+        "batch": 16,
+        "optimizer": "SGD",
+        "patience": 100,
+        "seed": 0,
+        "deterministic": true,
+        "amp": true,
+        "close_mosaic": 10,
+        "lr0": 0.01,
+        "lrf": 0.01,
+        "momentum": 0.937,
+        "weight_decay": 0.0005,
+        "warmup_epochs": 3.0
+      },
+      "FPO-YOLO-s": {
+        "epochs": 200,
+        "batch": 16,
+        "optimizer": "SGD",
+        "patience": 100,
+        "seed": 0,
+        "deterministic": true,
+        "amp": true,
+        "close_mosaic": 10,
+        "lr0": 0.01,
+        "lrf": 0.01,
+        "momentum": 0.937,
+        "weight_decay": 0.0005,
+        "warmup_epochs": 3.0
+      }
+    },
+    "AI_TOD_v2": {
+      "YOLO11n": {
+        "epochs": 200,
+        "batch": 15,
+        "optimizer": "auto",
+        "patience": 50,
+        "seed": 0,
+        "deterministic": true,
+        "amp": true,
+        "close_mosaic": 10
+      },
+      "FPO-YOLO-n": {
+        "epochs": 200,
+        "batch": 15,
+        "optimizer": "auto",
+        "patience": 50,
+        "seed": 0,
+        "deterministic": true,
+        "amp": true,
+        "close_mosaic": 10
+      },
+      "YOLO11s": {
+        "epochs": 200,
+        "batch": 15,
+        "optimizer": "auto",
+        "patience": 50,
+        "seed": 0,
+        "deterministic": true,
+        "amp": true,
+        "close_mosaic": 10
+      },
+      "FPO-YOLO-s": {
+        "epochs": 200,
+        "batch": 15,
+        "optimizer": "auto",
+        "patience": 50,
+        "seed": 0,
+        "deterministic": true,
+        "amp": true,
+        "close_mosaic": 10
+      }
+    }
+  },
+  "control_comparisons": {
+    "ablation_results": [
+      {
+        "enabled": {
+          "CIHF": false,
+          "AAD": false,
+          "BCSG": false,
+          "PASF": false
+        },
+        "mAP50": 38.8,
+        "mAP50_95": 23.2,
+        "main_model_reference": false
+      },
+      {
+        "enabled": {
+          "CIHF": true,
+          "AAD": false,
+          "BCSG": false,
+          "PASF": false
+        },
+        "mAP50": 43.9,
+        "mAP50_95": 26.6,
+        "main_model_reference": false
+      },
+      {
+        "enabled": {
+          "CIHF": true,
+          "AAD": true,
+          "BCSG": false,
+          "PASF": false
+        },
+        "mAP50": 44.6,
+        "mAP50_95": 27.0,
+        "main_model_reference": false
+      },
+      {
+        "enabled": {
+          "CIHF": true,
+          "AAD": false,
+          "BCSG": true,
+          "PASF": false
+        },
+        "mAP50": 45.6,
+        "mAP50_95": 27.6,
+        "main_model_reference": false
+      },
+      {
+        "enabled": {
+          "CIHF": true,
+          "AAD": false,
+          "BCSG": false,
+          "PASF": true
+        },
+        "mAP50": 45.0,
+        "mAP50_95": 27.3,
+        "main_model_reference": false
+      },
+      {
+        "enabled": {
+          "CIHF": true,
+          "AAD": true,
+          "BCSG": true,
+          "PASF": false
+        },
+        "mAP50": 46.5,
+        "mAP50_95": 28.3,
+        "main_model_reference": false
+      },
+      {
+        "enabled": {
+          "CIHF": true,
+          "AAD": false,
+          "BCSG": true,
+          "PASF": true
+        },
+        "mAP50": 46.6,
+        "mAP50_95": 28.6,
+        "main_model_reference": false
+      },
+      {
+        "enabled": {
+          "CIHF": true,
+          "AAD": true,
+          "BCSG": false,
+          "PASF": true
+        },
+        "mAP50": 46.4,
+        "mAP50_95": 28.3,
+        "main_model_reference": false
+      },
+      {
+        "enabled": {
+          "CIHF": true,
+          "AAD": true,
+          "BCSG": true,
+          "PASF": true
+        },
+        "mAP50": 48.1,
+        "mAP50_95": 29.2,
+        "main_model_reference": true
+      }
+    ],
+    "cihf_compare": {
+      "columns": [
+        "precision",
+        "recall",
+        "mAP50",
+        "mAP50_95",
+        "total_latency_ms"
+      ],
+      "rows": [
+        {
+          "configuration": "BiFPN",
+          "values": [
+            51.2,
+            38.5,
+            39.7,
+            23.9,
+            7.4
+          ]
+        },
+        {
+          "configuration": "GFPN",
+          "values": [
+            51.2,
+            38.4,
+            39.0,
+            23.3,
+            2.5
+          ]
+        },
+        {
+          "configuration": "HS-FPN",
+          "values": [
+            50.7,
+            38.3,
+            39.3,
+            23.5,
+            2.4
+          ]
+        },
+        {
+          "configuration": "YOLO11s",
+          "values": [
+            49.8,
+            38.1,
+            38.8,
+            23.2,
+            7.4
+          ]
+        },
+        {
+          "configuration": "YOLO11s-P2P4",
+          "values": [
+            53.2,
+            40.9,
+            42.8,
+            25.9,
+            2.8
+          ]
+        },
+        {
+          "configuration": "CIHF w/o interaction",
+          "values": [
+            51.5,
+            42.2,
+            43.1,
+            26.1,
+            2.9
+          ]
+        },
+        {
+          "configuration": "CIHF",
+          "values": [
+            54.4,
+            41.9,
+            43.9,
+            26.6,
+            3.2
+          ]
+        }
+      ]
+    },
+    "aad_dcn_compare": {
+      "columns": [
+        "precision",
+        "recall",
+        "mAP50",
+        "mAP50_95",
+        "total_latency_ms"
+      ],
+      "rows": [
+        {
+          "configuration": "DCNv1",
+          "values": [
+            56.7,
+            44.4,
+            47.0,
+            28.8,
+            5.7
+          ]
+        },
+        {
+          "configuration": "DCNv2",
+          "values": [
+            57.2,
+            43.9,
+            46.7,
+            28.7,
+            7.4
+          ]
+        },
+        {
+          "configuration": "DCNv3",
+          "values": [
+            57.3,
+            43.2,
+            46.3,
+            28.3,
+            7.1
+          ]
+        },
+        {
+          "configuration": "DCNv4",
+          "values": [
+            56.6,
+            44.7,
+            47.1,
+            28.7,
+            11.5
+          ]
+        },
+        {
+          "configuration": "DCNv2*",
+          "values": [
+            57.9,
+            45.3,
+            48.1,
+            29.2,
+            5.7
+          ]
+        }
+      ]
+    },
+    "bcsg_config": {
+      "columns": [
+        "precision",
+        "recall",
+        "mAP50",
+        "mAP50_95",
+        "parameters_M"
+      ],
+      "rows": [
+        {
+          "configuration": "Per-channel",
+          "values": [
+            58.8,
+            44.2,
+            47.2,
+            28.7,
+            3.99
+          ]
+        },
+        {
+          "configuration": "Contiguous partition",
+          "values": [
+            57.9,
+            45.3,
+            48.1,
+            29.2,
+            4.13
+          ]
+        }
+      ]
+    },
+    "head_compare": {
+      "columns": [
+        "precision",
+        "recall",
+        "mAP50",
+        "mAP50_95",
+        "total_latency_ms"
+      ],
+      "rows": [
+        {
+          "configuration": "ASFF (adapted)",
+          "values": [
+            57.6,
+            44.2,
+            47.1,
+            28.8,
+            9.7
+          ]
+        },
+        {
+          "configuration": "AFPN3",
+          "values": [
+            57.1,
+            44.7,
+            47.0,
+            29.0,
+            6.2
+          ]
+        },
+        {
+          "configuration": "MBConv",
+          "values": [
+            56.3,
+            42.6,
+            45.0,
+            27.2,
+            5.0
+          ]
+        },
+        {
+          "configuration": "LQE",
+          "values": [
+            54.6,
+            42.8,
+            44.7,
+            27.1,
+            6.7
+          ]
+        },
+        {
+          "configuration": "DyHead",
+          "values": [
+            55.4,
+            42.2,
+            44.6,
+            26.6,
+            4.2
+          ]
+        },
+        {
+          "configuration": "PASF",
+          "values": [
+            57.9,
+            45.3,
+            48.1,
+            29.2,
+            5.7
+          ]
+        }
+      ]
+    },
+    "loss_compare": {
+      "columns": [
+        "precision",
+        "recall",
+        "mAP50",
+        "mAP50_95"
+      ],
+      "rows": [
+        {
+          "configuration": "DIoU",
+          "values": [
+            57.1,
+            45.6,
+            47.4,
+            29.0
+          ]
+        },
+        {
+          "configuration": "GIoU",
+          "values": [
+            56.4,
+            45.4,
+            47.3,
+            28.9
+          ]
+        },
+        {
+          "configuration": "EIoU",
+          "values": [
+            57.6,
+            44.3,
+            46.9,
+            28.9
+          ]
+        },
+        {
+          "configuration": "SIoU",
+          "values": [
+            57.1,
+            46.0,
+            47.9,
+            29.3
+          ]
+        },
+        {
+          "configuration": "PIoU",
+          "values": [
+            57.6,
+            44.1,
+            46.7,
+            28.4
+          ]
+        },
+        {
+          "configuration": "Shape-IoU",
+          "values": [
+            56.1,
+            43.4,
+            45.5,
+            26.4
+          ]
+        },
+        {
+          "configuration": "Inner-CIoU",
+          "values": [
+            56.7,
+            43.9,
+            46.5,
+            28.3
+          ]
+        },
+        {
+          "configuration": "CIoU",
+          "values": [
+            57.9,
+            45.3,
+            48.1,
+            29.2
+          ]
+        }
+      ]
+    }
+  },
+  "reporting_notes": [
+    "Reported full-model AP50 entries reuse the main FPO-YOLO-s result (48.1265761807%, displayed as 48.1%).",
+    "Remaining control measurements retain their experiment records; SIoU remains 47.9%.",
+    "COCO size AP and Ultralytics AP are different calculations and are reported separately.",
+    "UAVDT values use the 24/6 sequence-level validation split, not the official test split.",
+    "Additional datasets are trained independently; evaluation does not measure zero-shot transfer."
+  ],
+  "complexity_scope": "VisDrone2019 profiling records; class count and model fusion state affect parameter counts."
+}

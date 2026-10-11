@@ -6,7 +6,7 @@
 
 FPO-YOLO is a YOLO11-based aerial detector with **P2–P4 prediction levels** (strides 4, 8, and 16). It connects local feature modulation, adaptive downsampling, cross-level context aggregation, and location-dependent scale selection along a high-resolution detection path.
 
-On **VisDrone2019 validation**, FPO-YOLO-s reaches **47.9% mAP50 / 29.2% mAP50–95**, improving over YOLO11s by **9.1 / 6.0 percentage points** with **56.2% fewer parameters**. The same validation-selected checkpoint reaches **38.9% / 22.8% on test-dev**. The parameter reduction comes with a higher estimated operation count; runtime depends on the dataset and evaluation settings.
+On **VisDrone2019 validation**, FPO-YOLO-s reaches **48.1% mAP50 / 29.2% mAP50–95**, improving over YOLO11s by **9.3 / 6.1 percentage points** with **56.2% fewer parameters**. The same validation-selected checkpoint reaches **38.9% / 22.7% on test-dev**. The parameter reduction comes with a higher estimated operation count; runtime depends on the dataset and evaluation settings.
 
 <p align="center">
   <img src="docs/fpo/assets/architecture.png" alt="FPO-YOLO architecture: backbone, high-resolution neck, P2–P4 heads, and BCSG container" width="100%">
@@ -25,6 +25,8 @@ On **VisDrone2019 validation**, FPO-YOLO-s reaches **47.9% mAP50 / 29.2% mAP50�
 | How the project developed from early drawings to the paper and second release | [Research and figure history](docs/fpo/development.md): timeline, tools, revisions, and before/after figures |
 
 ## Updates
+
+- **2026-10-11:** Synchronized validation/test-dev results and complete-model references with the current manuscript; added AP75, COCO size AP, updated plots, and a [machine-readable result snapshot](docs/fpo/data/reported-results.json).
 
 - **2026-10-10:** Refined bilingual navigation and usage examples, added scale-matched test-dev comparisons and a software citation, and retained the full code, experiment, and figure-development records.
 - **2026-10-09:** Expanded second-edition English/Chinese documentation with UAVDT and AI-TOD-v2 results and their protocols; added code-design explanations, experiment history, earlier milestones, and the figure-development workflow.
@@ -54,9 +56,10 @@ Accuracy values are percentages, rounded to one decimal place; reported gains us
 
 | Model | Val mAP50 | Val mAP50–95 | Test-dev mAP50 | Test-dev mAP50–95 | Params (M) | GFLOPs |
 |---|---:|---:|---:|---:|---:|---:|
-| YOLO11s | 38.8 | 23.2 | 31.4 | 18.0 | 9.43 | 21.6 |
-| FPO-YOLO-n | 40.9 | 24.7 | 33.1 | 19.2 | 1.34 | 13.5 |
-| FPO-YOLO-s | 47.9 | 29.2 | 38.9 | 22.8 | 4.13 | 36.5 |
+| YOLO11n | 32.3 | 18.7 | 26.0 | 14.6 | 2.58 | 6.3 |
+| FPO-YOLO-n | 41.2 | 24.6 | 33.0 | 19.1 | 1.34 | 13.5 |
+| YOLO11s | 38.8 | 23.2 | 31.7 | 18.3 | 9.43 | 21.6 |
+| FPO-YOLO-s | 48.1 | 29.2 | 38.9 | 22.7 | 4.13 | 36.5 |
 | FPO-YOLO-m | 51.5 | 31.8 | 41.1 | 24.3 | 14.84 | 121.0 |
 | FPO-YOLO-l | 52.2 | 32.4 | 41.4 | 24.5 | 16.50 | 138.0 |
 
@@ -68,9 +71,9 @@ The official train/val/test-dev partitions are retained. Test-dev is evaluated u
 | Model | Test-dev mAP50 | Test-dev mAP50–95 | Params (M) | GFLOPs |
 |---|---:|---:|---:|---:|
 | YOLO11n | 26.0 | 14.6 | 2.58 | 6.3 |
-| FPO-YOLO-n | **33.1** | **19.2** | **1.34** | 13.5 |
-| YOLO11s | 31.4 | 18.0 | 9.43 | 21.6 |
-| FPO-YOLO-s | **38.9** | **22.8** | **4.13** | 36.5 |
+| FPO-YOLO-n | **33.0** | **19.1** | **1.34** | 13.5 |
+| YOLO11s | 31.7 | 18.3 | 9.43 | 21.6 |
+| FPO-YOLO-s | **38.9** | **22.7** | **4.13** | 36.5 |
 | YOLO11m | 35.3 | 20.8 | 20.04 | 67.7 |
 | FPO-YOLO-m | **41.1** | **24.3** | **14.84** | 121.0 |
 | YOLO11l | 36.4 | 21.7 | 25.32 | 87.3 |
@@ -85,7 +88,7 @@ Bold marks higher accuracy or fewer parameters within each scale. The improvemen
 | Model | Val mAP50 | Val mAP50–95 |
 |---|---:|---:|
 | YOLO11n | 37.0 | 18.7 |
-| FPO-YOLO-n | 44.0 | 23.5 |
+| FPO-YOLO-n | 44.1 | 23.4 |
 | YOLO11s | 44.4 | 24.9 |
 | FPO-YOLO-s | 52.0 | 28.3 |
 
@@ -100,7 +103,52 @@ The custom split uses **24 complete training sequences / 6 validation sequences*
 | YOLO11s | 45.5 | 19.9 |
 | FPO-YOLO-s | 54.4 | 25.0 |
 
-The public **11,214 / 2,804 / 14,018** train/val/test split is retained. Models are trained only on `train`, selected on `val`, and evaluated on `test` with FP32 and `max_det=300`. These are results from the shared Ultralytics evaluator; they are not a reimplementation of the official tiny-size COCO evaluation. UAVDT and AI-TOD-v2 use **separately trained models**, rather than zero-shot transfer of VisDrone weights. [Dataset-specific protocols →](docs/fpo/reproduction.md#dataset-protocols)
+The public **11,214 / 2,804 / 14,018** train/val/test split is retained. Models are trained only on `train`, selected on `val`, and evaluated on `test` with FP32 and `max_det=300`. Overall accuracy and AP75 use Ultralytics; COCO size AP is reported separately below with the same 300-detection limit. UAVDT and AI-TOD-v2 use **separately trained models**, rather than zero-shot transfer of VisDrone weights. [Dataset-specific protocols →](docs/fpo/reproduction.md#dataset-protocols)
+
+### AP75 and object-size results
+
+The same selected checkpoints supply these strict-IoU results. Full precision values, per-class AP, weight hashes, and evaluation settings are in the [result JSON](docs/fpo/data/reported-results.json).
+
+| Model | VisDrone val mAP75 | UAVDT val mAP75 | AI-TOD-v2 test mAP75 |
+|---|---:|---:|---:|
+| YOLO11n | 18.6 | 14.7 | 10.3 |
+| FPO-YOLO-n | 25.1 | 21.4 | 14.5 |
+| YOLO11s | 23.6 | 24.2 | 14.3 |
+| FPO-YOLO-s | 30.2 | 25.7 | 19.2 |
+
+<details>
+<summary><strong>COCO size-specific AP</strong></summary>
+
+**VisDrone2019 validation**
+
+| Model | AP_small | AP_medium | AP_large |
+|---|---:|---:|---:|
+| YOLO11n | 8.7 | 26.9 | 35.2 |
+| FPO-YOLO-n | 14.9 | 33.3 | 43.6 |
+| YOLO11s | 12.4 | 32.9 | 42.4 |
+| FPO-YOLO-s | 18.8 | 38.7 | 44.4 |
+
+**UAVDT validation**
+
+| Model | AP_small | AP_medium | AP_large |
+|---|---:|---:|---:|
+| YOLO11n | 10.5 | 26.1 | 38.0 |
+| FPO-YOLO-n | 12.5 | 28.0 | 27.9 |
+| YOLO11s | 10.1 | 25.2 | 37.9 |
+| FPO-YOLO-s | 12.7 | 39.7 | 35.6 |
+
+**AI-TOD-v2 test**
+
+| Model | AP_verytiny | AP_tiny | AP_small | AP_medium |
+|---|---:|---:|---:|---:|
+| YOLO11n | 3.5 | 12.7 | 20.9 | 28.2 |
+| FPO-YOLO-n | 7.1 | 18.0 | 25.2 | 31.6 |
+| YOLO11s | 4.7 | 17.1 | 26.8 | 37.0 |
+| FPO-YOLO-s | 10.3 | 23.2 | 31.7 | 38.8 |
+
+Size AP uses original-image area, COCOeval, and maxDets=300. VisDrone/UAVDT boundaries are 32²/96²; AI-TOD-v2 boundaries are 8²/16²/32². These values are reported separately from Ultralytics AP.
+
+</details>
 
 ### Controlled design comparisons
 
@@ -158,10 +206,10 @@ Each image has a same-stem label file with rows `class_id x_center y_center widt
 ### 3. Train from random initialization
 
 ```bash
-python scripts/train.py --scale s --data configs/visdrone.yaml --device 0
+python scripts/train.py --scale s --data configs/visdrone.yaml --batch 12 --device 0
 ```
 
-The released training entry point uses YAML initialization, `imgsz=640`, batch 16, up to 200 epochs, SGD, patience 100, AMP, and `close_mosaic=10`. Its default seed is 0. This is the release default, not a retrospective claim that every historical experiment used that seed. The script is intended for the VisDrone/UAVDT settings; **AI-TOD-v2 requires the separate protocol below**.
+The training entry point uses YAML initialization, `imgsz=640`, up to 200 epochs, SGD, patience 100, AMP, and `close_mosaic=10`, with seed 0. The reported VisDrone FPO-n/s runs use `--batch 12`; UAVDT uses `--batch 16`. The command above matches the VisDrone setting. The script retains 16 as its default and accepts an explicit batch override. The script is intended for the VisDrone/UAVDT settings; **AI-TOD-v2 requires the separate protocol below**.
 
 ### 4. Evaluate validation-selected weights
 

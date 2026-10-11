@@ -1,4 +1,4 @@
-"""Train FPO-YOLO with the protocol reported in the paper."""
+"""Train FPO-YOLO with a configurable training batch size."""
 
 import argparse
 from pathlib import Path
@@ -14,7 +14,16 @@ def parse_args():
     parser.add_argument("--project", default="runs/fpo_yolo")
     parser.add_argument("--name", default=None)
     parser.add_argument("--workers", type=int, default=8)
-    return parser.parse_args()
+    parser.add_argument(
+        "--batch",
+        type=int,
+        default=16,
+        help="Training batch size (reported VisDrone FPO n/s:12; UAVDT:16)",
+    )
+    args = parser.parse_args()
+    if args.batch < 1:
+        parser.error("--batch must be a positive integer")
+    return args
 
 
 def main():
@@ -25,7 +34,7 @@ def main():
         epochs=200,
         patience=100,
         imgsz=640,
-        batch=16,
+        batch=args.batch,
         optimizer="SGD",
         lr0=0.01,
         lrf=0.01,

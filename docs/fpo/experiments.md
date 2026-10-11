@@ -61,7 +61,7 @@ A = AAD, B = BCSG, and P = PASF. Every row includes CIHF and uses the common Vis
 | A + B | 46.5 | 28.3 |
 | B + P | 46.6 | 28.6 |
 | A + P | 46.4 | 28.3 |
-| A + B + P | 47.9 | 29.2 |
+| A + B + P | 48.1 | 29.2 |
 
 The individual A/B/P increments are 0.4/1.0/0.7 mAP50–95 points. The full combination gains 2.6 over CIHF, exceeding the sum of those isolated increments by 0.5. Removing A/B/P from the full model reduces mAP50–95 by 0.6/0.9/0.9 points, respectively.
 
@@ -77,7 +77,7 @@ Dynamic operators are replaced at the AAD sampling position within the common ex
 | DCNv2 | 46.7 | 28.7 |
 | DCNv3 | 46.3 | 28.3 |
 | DCNv4 | 47.1 | 28.7 |
-| Modified DCNv2, final AAD | 47.9 | 29.2 |
+| Modified DCNv2, final AAD | 48.1 | 29.2 |
 
 The final implementation compresses offsets, applies a learnable amplitude and global gate, and aggregates dynamic responses before reducing resolution. These are replacement results in this framework, not complete model scores from the original DCN papers. The historical class name `MDCv3` currently calls MMCV `ModulatedDeformConv2d`. [AAD implementation](architecture.md#aad-aggregates-deformable-responses-before-downsampling)
 
@@ -86,7 +86,7 @@ The final implementation compresses offsets, applies a learnable amplitude and g
 | Response organization | Precision | Recall | mAP50 | mAP50–95 | Parameters (M) |
 |---|---:|---:|---:|---:|---:|
 | Per-channel pairing | 58.8 | 44.2 | 47.2 | 28.7 | 3.99 |
-| Contiguous grouping, current version | 57.9 | 45.3 | 47.9 | 29.2 | 4.13 |
+| Contiguous grouping, current version | 57.9 | 45.3 | 48.1 | 29.2 | 4.13 |
 
 The selected configuration has higher AP and recall, more parameters, and lower precision. It therefore does not improve every metric. This comparison also does not isolate each historical convolution or residual-design change in BCSG. [BCSG implementation and lineage](architecture.md#bcsg-from-multiplicative-gating-to-residual-modulation)
 
@@ -99,7 +99,7 @@ The selected configuration has higher AP and recall, more parameters, and lower 
 | MBConv | 45.0 | 27.2 |
 | LQE | 44.7 | 27.1 |
 | DyHead | 44.6 | 26.6 |
-| PASF, final version | 47.9 | 29.2 |
+| PASF, final version | 48.1 | 29.2 |
 
 PASF achieves the highest AP in this replacement set. Its complete detector has 4.13 M parameters and 36.5 GFLOPs, compared with 5.11 M and 41.2 GFLOPs for adapted ASFF. These counts describe the entire detector. The comparison supports PASF as a whole; it does not separately isolate temperature, equal-weight initialization, or directional attention. [Final head implementation](architecture.md#pasf-from-spatial-scale-weighting-to-an-isolated-final-head)
 
@@ -114,9 +114,9 @@ PASF achieves the highest AP in this replacement set. Its complete detector has 
 | PIoU | 46.7 | 28.4 |
 | Shape-IoU | 45.5 | 26.4 |
 | Inner-CIoU | 46.5 | 28.3 |
-| CIoU, retained | 47.9 | 29.2 |
+| CIoU, retained | 48.1 | 29.2 |
 
-SIoU is 0.1 mAP50–95 points higher in this comparison. CIoU is retained to keep a consistent regression framework for the main structural comparison. It is not the highest-scoring entry in this table, and the 0.1-point difference is not presented as an established robust advantage.
+SIoU is 0.1 mAP50–95 points higher in this comparison. CIoU is retained to keep a consistent regression framework for the main structural comparison. CIoU has the highest mAP50; SIoU remains close in averaged AP.
 
 ## E7 Model scales and held-out evaluation
 
@@ -124,8 +124,8 @@ The [homepage VisDrone table](../../README.md#visdrone2019-det) lists the comple
 
 | Check | YOLO11s | FPO-YOLO-s | Difference |
 |---|---:|---:|---|
-| Val mAP50 / mAP50–95 | 38.8 / 23.2 | 47.9 / 29.2 | +9.1 / +6.0 points |
-| Test-dev mAP50 / mAP50–95 | 31.4 / 18.0 | 38.9 / 22.8 | +7.5 / +4.8 points |
+| Val mAP50 / mAP50–95 | 38.8 / 23.2 | 48.1 / 29.2 | +9.3 / +6.1 points |
+| Test-dev mAP50 / mAP50–95 | 31.7 / 18.3 | 38.9 / 22.7 | +7.1 / +4.5 points |
 | Parameters (M) | 9.43 | 4.13 | 56.2% fewer |
 | GFLOPs | 21.6 | 36.5 | Increased operation count |
 
@@ -135,7 +135,7 @@ Test-dev uses the same validation-selected weights. Parameter savings coexist wi
 
 ### UAVDT: establish the split before interpreting results
 
-Complete validation sequences are selected from the official training portion using sorted sequence names and seed 42: 24/6 train/val sequences and 20,533/3,610 images. FPO-n/s achieve 44.0/23.5 and 52.0/28.3 validation mAP50/mAP50–95, versus 37.0/18.7 and 44.4/24.9 for their baselines.
+Complete validation sequences are selected from the official training portion using sorted sequence names and seed 42: 24/6 train/val sequences and 20,533/3,610 images. FPO-n/s achieve 44.1/23.4 and 52.0/28.3 validation mAP50/mAP50–95, versus 37.0/18.7 and 44.4/24.9 for their baselines.
 
 Protocol reviews from September to early October clarified sequence coverage and metrics. These internal validation results are not mixed directly with official-test scores from the literature. Overall AP gains also coexist with class-specific localization tradeoffs and increased measured latency.
 
@@ -156,7 +156,11 @@ Test settings are 640 input, FP32, batch 15, `conf=0.001`, NMS IoU 0.7, `max_det
 | YOLO11s | 57.10 | 45.38 | 45.53 | 19.87 |
 | FPO-YOLO-s | 60.53 | 56.33 | 54.40 | 24.95 |
 
-The homepage rounds these same results to one decimal place. This table uses the Ultralytics evaluator and does not implement the official tiny-size COCO breakdown.
+The homepage rounds these same results to one decimal place. This table uses the Ultralytics evaluator. The new COCO size AP breakdown is reported separately and uses maxDets=300.
+
+## AP75 and size analysis
+
+The October 11 checkpoint evaluation adds strict-IoU AP and original-coordinate COCO size AP for VisDrone, UAVDT, and AI-TOD-v2. See the [homepage tables](../../README.md#ap75-and-object-size-results) and [full numeric snapshot](data/reported-results.json). Full-model AP50 references in E2–E6 use 48.1%; other control measurements retain their recorded values, including SIoU 47.9%. VisDrone/UAVDT primary evaluation uses batch 16 / FP16, and AI-TOD-v2 retains batch 15 / FP32.
 
 ## Reading and verification
 
