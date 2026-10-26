@@ -6,9 +6,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 def Upsample(x, size, align_corners=False):
+    """Resize spatial dimensions with bilinear interpolation to the requested size."""
     return F.interpolate(x, size=size, mode='bilinear', align_corners=align_corners)
 
 class Conv(nn.Module):
+    """Apply convolution, batch normalization, and the configured activation."""
     default_act = nn.SiLU()
 
     def __init__(self, c1, c2, k=1, s=1, p=None, g=1, d=1, act=True):
@@ -22,6 +24,12 @@ class Conv(nn.Module):
         return self.act(self.bn(self.conv(x)))
 
 class SBA_Precise(nn.Module):
+    """Exchange context between projected deep H and intermediate L features.
+
+    A pooled deep gate conditions channel-wise affine parameters and two
+    mixing coefficients. Element-wise gates modulate the branches before
+    bilinear cross-level exchange. Return the fused intermediate-resolution
+    feature and the two gates, each shaped (B, mid_dim, H, W) at its level."""
     def __init__(self, cH, cL, mid_dim=128):
         super().__init__()
         self.mid_dim = mid_dim
@@ -48,6 +56,7 @@ class SBA_Precise(nn.Module):
         H_mid = self.fc_h(H)
         g_L = torch.sigmoid(L_mid)
         g_H = torch.sigmoid(H_mid)
+        # The condition is pooled from the deep branch gate.
         proc_params = self.gate_to_proc(F.adaptive_avg_pool2d(g_H, 1))
         mid = self.mid_dim
         proc_l_w = proc_params[:, :mid]
@@ -71,13 +80,13 @@ class SBA_Precise(nn.Module):
         return self.fuse(torch.cat([L_out, H_out_up], dim=1)), g_L, g_H
 
 class HyperScaleDynamicFusionAllScale(nn.Module):
-    """
-    CIHF ablation 3: Stage-2 gating descriptor uses all three aligned
-    P2/P3/P4 features instead of only pooled g_L.
+    """Aggregate aligned features shaped (B, C, S, H, W).
 
-    The gate is still channel-wise and spatial-shared; only its conditioning
-    source changes.
-    """
+    Pooled descriptors from all scales condition sigmoid scale weights of
+    shape (B, C, S, 1, 1) and a channel gate of shape (B, C, 1, 1).
+    Both are shared across spatial positions. The historical spatial_gate
+    name denotes this channel gate. Optional g_L/g_H arguments are retained
+    in the interface; the current descriptor is built from x_scales."""
 
     def __init__(self, channels, num_scales=3):
         super().__init__()
@@ -98,13 +107,19 @@ class HyperScaleDynamicFusionAllScale(nn.Module):
         B, C, S, H, W = x_scales.shape
         pooled = [F.adaptive_avg_pool2d(x_scales[:, :, s], 1) for s in range(S)]
         descriptor = torch.cat(pooled, dim=1)
+        # Weights vary by image, channel, and scale, and are spatially shared.
         scale_weights = self.hypernet(descriptor).view(B, C, S, 1, 1)
         x_fused = (x_scales * scale_weights).sum(dim=2)
+        # Despite the retained name, this is a shared-position channel gate.
         spatial_mod = self.spatial_gate(descriptor).view(B, C, 1, 1)
         return self.bn(self.spatial_conv(x_fused * spatial_mod))
 
 class ScalSeq_SBA(nn.Module):
-    """CIHF ablation: all-scale descriptor for Stage-2 gate generation."""
+    """Build the CIHF neck input from backbone features ordered [B2, B3, B4].
+
+    Exchange B3/B4 context, align all three projected features to B2, and
+    aggregate them. A learned scalar beta scales the aggregate before adding
+    it to projected B2 and applying SiLU."""
 
     def __init__(self, inc, out_ch=128, sba_dim=128):
         super().__init__()

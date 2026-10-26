@@ -2,13 +2,12 @@
 
 import argparse
 
-from ultralytics import YOLO
-
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--scale", choices=("n", "s", "m", "l", "x"), default="s")
     args = parser.parse_args()
+    from ultralytics import YOLO
+
     model = YOLO(f"yolo11{args.scale}-fpo.yaml")
     model.info(detailed=False, verbose=True, imgsz=640)
 

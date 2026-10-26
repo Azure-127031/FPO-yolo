@@ -24,6 +24,9 @@ python scripts/check_model.py --scale s
 
 ## 数据集与划分
 
+UAVDT 的实际序列名单及已有图像计数见 [`configs/uavdt-split.json`](../../configs/uavdt-split.json)。训练/验证名单来自保留审计，并已核对 seed42 的抽样结果。2026-10-26 再次直接清点服务器图像目录，确认原有 24/6 个训练/验证序列及 20,533/3,610 张图像；文件同时列出独立的 20 个测试序列及 16,592 张图像，并包含每个序列的图像数。这里恢复的是原实验划分，没有重新划分数据。文件中的哈希对应既有审计产物，不能代替标注转换程序。
+
+
 | 数据集 | 训练 / 验证 / 最终评估 | 类别数 | 关键区别 |
 |---|---|---:|---|
 | VisDrone2019-DET | 官方 train / val / test-dev | 10 | 先以 val 选择权重，再以固定权重评估 test-dev。 |
@@ -54,7 +57,7 @@ AI-TOD-v2 使用 **v2 标注**制作 YAML，保留公开子集归属和类别映
 |---|---|---|
 | 初始化 | 模型 YAML / 随机初始化 | 模型 YAML / 随机初始化 |
 | 输入尺寸 | 640×640 | 640×640 |
-| 训练 batch | VisDrone YOLO11n/s：16，FPO-n/s：12；UAVDT：16 | 15 |
+| 训练 batch | VisDrone YOLO11n/s 与 FPO-n/s：16；UAVDT：16 | 15 |
 | 最大轮数 | 200 | 200 |
 | 早停 patience | 100 | 50 |
 | 优化器 | SGD | `auto` |
@@ -70,12 +73,12 @@ AI-TOD-v2 使用 **v2 标注**制作 YAML，保留公开子集归属和类别映
 | NMS IoU / 最大检测数 | 0.7 / 300 | 0.7 / 300 |
 | 测试时增强 | 关闭 | 关闭 |
 
-已核验主要 n/s 实验使用 seed0。`scripts/train.py` 支持 `--batch`，VisDrone FPO-n/s 对应12，UAVDT 对应16；不将这些设置追溯至未记录的其他历史实验。结构对照保留 CIoU 回归目标，FPO-YOLO 沿用分类与分布焦点损失训练流程，不因这些模块另行引入自定义训练损失。
+已核验主要 n/s 实验使用 seed0。`scripts/train.py` 支持 `--batch`，按作者确认后的论文协议，VisDrone 与 UAVDT 均使用16；不将这些设置追溯至未记录的其他历史实验。结构对照保留 CIoU 回归目标，FPO-YOLO 沿用分类与分布焦点损失训练流程，不因这些模块另行引入自定义训练损失。
 
 ### VisDrone 与 UAVDT 运行入口
 
 ```bash
-python scripts/train.py --scale s --data configs/visdrone.yaml --batch 12 --device 0 --project runs/fpo_yolo --name fpo_yolo_s_e200
+python scripts/train.py --scale s --data configs/visdrone.yaml --batch 16 --device 0 --project runs/fpo_yolo --name fpo_yolo_s_e200
 python scripts/val.py --weights runs/fpo_yolo/fpo_yolo_s_e200/weights/best.pt --data configs/visdrone.yaml --device 0 --split val
 python scripts/val.py --weights runs/fpo_yolo/fpo_yolo_s_e200/weights/best.pt --data configs/visdrone.yaml --device 0 --split test --save-json
 ```
@@ -135,7 +138,7 @@ YOLO(str(best)).val(
 
 ## 对齐公开结构
 
-- **BCSG：**`C3k2_BCSG` 控制瓶颈 shortcut，不切换 C3k 分支；可学习核组按连续输出通道分段，不能解释为按通道交错的微分核组。
+- **BCSG：**既有 YAML 中的布尔参数控制瓶颈 shortcut。新增的末尾 `c3k` 参数独立控制是否采用标准 C3k 块，默认 False，保留 BCSG 块及既有 YAML 的含义；这一可选分支不代表新增实验结果。可学习核组按连续输出通道分段，不能解释为按通道交错的微分核组。
 - **AAD：**实际调用 `ModulatedDeformConv2d`（DCNv2），历史类名 `MDCv3` 不表示算子版本。
 - **CIHF：**YAML 中对应 `ScalSeq_SBA`，即公开的 CIHF 实现。
 - **PASF：**使用 `Detect_PASF_Final`，不以历史 `Detect_ASFF1`/ASFF 检测头或其他结构的权重替换。
@@ -159,3 +162,21 @@ YOLO(str(best)).val(
 | 新运行目录带后缀 | 使用训练器实际 `save_dir`，避免评估旧运行权重。 |
 
 本指南记录发布版本及汇报设置，不在缺少原始清单、权重时声称全部历史实验可精确重建。
+
+### 验证入口
+
+`val.py` 默认保持 batch=16、FP16。AI-TOD-v2 权重应使用经过核对的数据集 YAML 和单独的测试协议：
+
+```bash
+python scripts/val.py --weights path/to/best.pt --data path/to/audited_aitod_v2.yaml --split test --batch 15 --precision fp32 --save-json
+```
+
+这两个验证选项不会改变训练协议；AI-TOD-v2 训练仍使用上面的独立示例。未安装模型依赖时也能查看参数帮助，实际训练和验证仍需兼容的 PyTorch/MMCV 环境。
+
+入口回归检查无需模型依赖或 GPU：
+
+```bash
+python -B -m unittest discover -s scripts/tests -v
+```
+
+该检查覆盖参数校验及评估设置传递，不代表模型精度或 CUDA 算子已经通过验证。

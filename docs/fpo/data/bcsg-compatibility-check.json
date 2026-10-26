@@ -1,0 +1,77 @@
+{
+  "torch": "2.4.1+cu118",
+  "device": "cpu",
+  "dependency_source": "Conv/Bottleneck/C3/C3k extracted from the local publishing checkout; no server model files changed",
+  "cases": [
+    {
+      "case": "default_matches_legacy",
+      "c1": 32,
+      "c2": 64,
+      "n": 1,
+      "shortcut": true,
+      "state_dict_strict": true,
+      "output_exact": true,
+      "input_and_parameter_gradients_exact": true
+    },
+    {
+      "case": "default_matches_legacy",
+      "c1": 32,
+      "c2": 64,
+      "n": 1,
+      "shortcut": false,
+      "state_dict_strict": true,
+      "output_exact": true,
+      "input_and_parameter_gradients_exact": true
+    },
+    {
+      "case": "default_matches_legacy",
+      "c1": 64,
+      "c2": 128,
+      "n": 2,
+      "shortcut": true,
+      "state_dict_strict": true,
+      "output_exact": true,
+      "input_and_parameter_gradients_exact": true
+    },
+    {
+      "case": "default_matches_legacy",
+      "c1": 64,
+      "c2": 128,
+      "n": 2,
+      "shortcut": false,
+      "state_dict_strict": true,
+      "output_exact": true,
+      "input_and_parameter_gradients_exact": true
+    },
+    {
+      "case": "optional_c3k",
+      "shortcut": true,
+      "all_blocks_standard_c3k": true,
+      "shape": [
+        2,
+        64,
+        8,
+        8
+      ],
+      "finite_forward_and_backward": true
+    },
+    {
+      "case": "optional_c3k",
+      "shortcut": false,
+      "all_blocks_standard_c3k": true,
+      "shape": [
+        2,
+        64,
+        8,
+        8
+      ],
+      "finite_forward_and_backward": true
+    }
+  ],
+  "checked_on": "2026-10-26",
+  "legacy_commit": "2aa537d3805346c4ef8becbf56001a7e44bb42a3",
+  "current_bcsg_sha256": "cb0635eae93b0ca46862ccafcd183b06c9a7cc07ef2ac4e1e9ffb250c4eb9af9",
+  "scope": "Synthetic CPU tensors and legacy-module state dictionaries; no training, accuracy evaluation, or trained-checkpoint performance claim.",
+  "post_check_edit": "Comment and whitespace cleanup only; executable AST verified unchanged after CPU checks.",
+  "source_hash_encoding": "UTF-8 with LF line endings"
+}

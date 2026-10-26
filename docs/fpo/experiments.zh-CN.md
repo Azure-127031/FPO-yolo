@@ -162,6 +162,10 @@ test-dev 使用验证集选择的同一权重。参数量减少与运算量增�
 
 10月11日的既有检查点评估补充了 VisDrone、UAVDT 与 AI-TOD-v2 的严格 IoU AP 及原坐标 COCO 尺寸 AP。结果见[首页表格](../../README.zh-CN.md#ap75-与目标尺寸结果)及[完整数值快照](data/reported-results.json)。E2–E6 的完整模型 AP50 引用为48.1%，其他控制测量保持原记录，包括 SIoU47.9%。VisDrone/UAVDT 主要评估采用 batch16/FP16，AI-TOD-v2 保留 batch15/FP32。
 
+## 10月25—26日的记录补全
+
+论文中缺失的 RemDet-S 精确率与召回率来自保存的第26轮预测复算，并非新增训练。新计划的补充训练已停止，未向已报告结果提供数据。10月26日直接清点服务器图像目录，确认既有 UAVDT 训练/验证划分；确切序列及计数见[划分记录](../../configs/uavdt-split.json)。可选 C3k 分支与原有 BCSG 实验保持区分。
+
 ## 怎样阅读和复核这些材料
 
 - **查看最终公开结果：**[项目首页](../../README.zh-CN.md#实验结果)。

@@ -24,6 +24,9 @@ The requirements file specifies `mmcv>=2.0.0,<2.3.0`; wheel availability depends
 
 ## Dataset protocols
 
+The exact UAVDT sequence lists and saved image counts are in [`configs/uavdt-split.json`](../../configs/uavdt-split.json). The train/validation lists were recovered from the retained audit and checked against seed-42 sampling. On 2026-10-26, the server image directories independently confirmed the same 24/6 split, with 20,533/3,610 images; the file also records all 20 separate test sequences and their 16,592 images. Per-sequence counts are included. This is the existing experiment split, not a newly generated one. The archive hashes identify the saved audit outputs and do not substitute for distributing the underlying annotation converter.
+
+
 | Dataset | Training / validation / final evaluation | Class count | Important distinction |
 |---|---|---:|---|
 | VisDrone2019-DET | Official train / val / test-dev | 10 | Checkpoint selection uses val, then fixed weights are evaluated on test-dev. |
@@ -54,7 +57,7 @@ Create an AI-TOD-v2 YAML from the **v2 annotations**, preserving the public part
 |---|---|---|
 | Initialization | Model YAML / random initialization | Model YAML / random initialization |
 | Image size | 640×640 | 640×640 |
-| Training batch | VisDrone YOLO11n/s:16; FPO-n/s:12; UAVDT:16 | 15 |
+| Training batch | VisDrone YOLO11n/s and FPO-n/s:16; UAVDT:16 | 15 |
 | Maximum epochs | 200 | 200 |
 | Early-stopping patience | 100 | 50 |
 | Optimizer | SGD | `auto` |
@@ -70,12 +73,12 @@ Create an AI-TOD-v2 YAML from the **v2 annotations**, preserving the public part
 | NMS IoU / max detections | 0.7 / 300 | 0.7 / 300 |
 | Test-time augmentation | Disabled | Disabled |
 
-The recorded primary n/s runs use seed 0. The training script accepts `--batch`; use 12 for the VisDrone FPO-n/s records and 16 for UAVDT. These settings do not retrospectively define unrecorded historical experiments. Structural comparisons retain the CIoU regression objective. FPO-YOLO uses the inherited classification and distribution-focal-loss training machinery; there is no separate custom training loss introduced by these modules.
+The recorded primary n/s runs use seed 0. The training script accepts `--batch`; use 16 for both VisDrone and UAVDT, following the corrected manuscript protocol confirmed by the author. These settings do not retrospectively define unrecorded historical experiments. Structural comparisons retain the CIoU regression objective. FPO-YOLO uses the inherited classification and distribution-focal-loss training machinery; there is no separate custom training loss introduced by these modules.
 
 ### VisDrone and UAVDT entry points
 
 ```bash
-python scripts/train.py --scale s --data configs/visdrone.yaml --batch 12 --device 0 --project runs/fpo_yolo --name fpo_yolo_s_e200
+python scripts/train.py --scale s --data configs/visdrone.yaml --batch 16 --device 0 --project runs/fpo_yolo --name fpo_yolo_s_e200
 python scripts/val.py --weights runs/fpo_yolo/fpo_yolo_s_e200/weights/best.pt --data configs/visdrone.yaml --device 0 --split val
 python scripts/val.py --weights runs/fpo_yolo/fpo_yolo_s_e200/weights/best.pt --data configs/visdrone.yaml --device 0 --split test --save-json
 ```
@@ -135,7 +138,7 @@ The displayed AI-TOD-v2 results use the shared Ultralytics evaluator. They are n
 
 ## Match the released architecture
 
-- **BCSG:** `C3k2_BCSG` controls bottleneck shortcut behavior, not a C3k branch switch. Its learnable response bank uses contiguous output-channel partitions; do not reinterpret it as an interleaved per-channel derivative bank.
+- **BCSG:** The existing YAML Boolean controls bottleneck shortcuts. A separate trailing `c3k` option now selects standard C3k blocks when True; it defaults to False, retaining BCSG blocks and the existing YAML interpretation. The optional branch is not a newly evaluated model. Its learnable response bank uses contiguous output-channel partitions; do not reinterpret it as an interleaved per-channel derivative bank.
 - **AAD:** the implementation calls `ModulatedDeformConv2d` (DCNv2). Its historical `MDCv3` class name is not an operator-version claim.
 - **CIHF:** the YAML module name is `ScalSeq_SBA`; this is the released CIHF implementation.
 - **PASF:** use `Detect_PASF_Final`, not a historical `Detect_ASFF1`/ASFF head or weights from an unrelated architecture.
@@ -159,3 +162,21 @@ For runtime comparisons, record GPU, precision, batch size, image size, and prep
 | A new run appears under a suffixed directory | Use the trainer's actual `save_dir`; do not evaluate a checkpoint from an older run. |
 
 This guide documents the release and reported protocols. It does not claim that all historical runs can be exactly reconstructed without their original manifests and checkpoints.
+
+### Evaluation entry point
+
+`val.py` retains batch 16 and FP16 by default. For an AI-TOD-v2 checkpoint, use the audited dataset YAML and its separate test protocol:
+
+```bash
+python scripts/val.py --weights path/to/best.pt --data path/to/audited_aitod_v2.yaml --split test --batch 15 --precision fp32 --save-json
+```
+
+Changing these evaluation options does not configure AI-TOD-v2 training; use the training example above. Argument help is available before installing the model dependencies. Actual training and evaluation still require a compatible PyTorch/MMCV environment.
+
+CLI regression checks (no model dependencies or GPU required):
+
+```bash
+python -B -m unittest discover -s scripts/tests -v
+```
+
+These checks verify argument handling and forwarded evaluation settings, not model accuracy or CUDA operator compatibility.

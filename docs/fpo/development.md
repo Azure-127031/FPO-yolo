@@ -36,6 +36,13 @@ The drawing archive predates the GitHub repository. This timeline brings togethe
 | 2026-10-08 | Figure semantics and appearance | Checked strides, feature names, and shortcuts; compared redraws with local revisions, retained the original shapes/routes, and recolored individual modules. Organized the accuracy–complexity plot by mAP50. | Figure revisions and geometry checks |
 | 2026-10-09 | Second-edition documentation | Prepared English/Chinese manuscript versions with repository links and released the second-edition documentation in [`d367e8e`](https://github.com/Azure-127031/FPO-yolo/commit/d367e8e). This expanded history builds on that release using existing code, assets, and results. | Commit and bilingual delivery records |
 | 2026-10-11 | Checkpoint evaluation and result synchronization | Evaluated existing checkpoints with AP75 and COCO size AP; synchronized the manuscript, numerical snapshot, and figures without new training or splits. | Evaluation records and current manuscript |
+| 2026-10-12–10-17 | Integrating supervisor feedback | Revisited three rounds of feedback alongside reference papers; reconciled contribution statements, equation presentation, figure labels, and validation/test distinctions. | Dated manuscript review records |
+| 2026-10-19–10-20 | Restoring a coherent method narrative | Studied the supplied LYA-YOLO method section, then retained the October 19 draft as a basis while recovering useful explanations and supervisor-requested structure. | Method comparison and restoration records |
+| 2026-10-21–10-23 | Connecting text and figures | Refined transitions between components and experiments; placed English method figures near the relevant sections and reviewed formula/page breaks against journal examples. | Bilingual manuscript and layout checks |
+| 2026-10-24–10-25 | Architecture figure and code semantics | Revised individual module colors, connectors, labels, and group boundaries; separated shortcut control from optional C3k selection while keeping the experimental BCSG path. | Figure revisions and module source |
+| 2026-10-25 | Completing existing comparison records | Recovered RemDet-S precision/recall from the saved epoch-26 predictions. Additional planned training was stopped and did not supply reported results. | Saved prediction evaluation and stop records |
+| 2026-10-25–10-26 | Bilingual prose and argument review | Refined the abstract, contributions, chapter transitions, and result interpretations while retaining implementation facts and measured values. | Before/after manuscript records |
+| 2026-10-26 | Repository and live split verification | Corrected batch metadata, checked the default/optional BCSG container paths on CPU, inventoried UAVDT image sequences on the server, and aligned comments with the current computations. | [Compatibility check](data/bcsg-compatibility-check.json), [split inventory](../../configs/uavdt-split.json) |
 
 ## How the work developed
 
@@ -72,6 +79,18 @@ Repeated objects such as Conv, Split, BCSG, and Concat receive consistent colors
 ### Turn the material into an open research record
 
 The repository was created on September 8, the implementation released on September 29, and bilingual second-edition documentation published on October 9. The README provides the model, results, and entry points; the reproduction guide explains data and environment settings; this page follows the research and figure work. The expanded history makes the earlier stages visible while retaining the existing second-edition implementation and results.
+
+### Reconcile successive drafts around the same research question
+
+The October revisions exposed a recurring writing problem: detailing every operation made the method read like a code walkthrough, while excessive compression removed the roles of the main modules. We returned to the October 19 LYA-informed draft and used the supervisor feedback to retain a clear progression from local feature refinement and downsampling to contextual aggregation and prediction. The abstract kept the four components and their distinct roles; tensor definitions, residual updates, and initialization details remained in the method section where they support the formulas.
+
+This also changed how results were explained. Structural references distinguish the high-resolution prediction path from the subsequent components. Class and size analyses show where gains occur and where they remain uneven. UAVDT and AI-TOD-v2 are described as separately trained evaluations, and reported comparisons retain their actual data splits and evaluators. The objective was a consistent account of the implemented model and its evidence, rather than a new narrative with every language revision.
+
+### Bring the paper and release back into agreement
+
+The final figure passes kept the established architecture while correcting local presentation: T2–T4 feature planes, PASF resolution labels, N2–N4 identifiers, connector routes, and the two C3k container illustrations. The revised manuscript diagram distinguishes the reported BCSG configuration from the optional standard-C3k branch. The latter is a code option, not a replacement for the model used in the reported experiments.
+
+On October 26 we checked the server rather than relying only on a split description. The image inventory confirmed 24 training sequences and six validation sequences, with 20,533 and 3,610 images; the 20 test sequences remained separate. We also corrected the previously recorded VisDrone batch value to the author-confirmed 16, with a correction record retained in the result JSON. The code comments now explain tensor roles, gate sharing, operation order, and argument semantics without treating intended effects as independently measured results. The [source-record index](data/development-evidence-20261026.json) identifies the retained records used for this update.
 
 ## From a shallow prediction level to a coordinated path
 
@@ -132,7 +151,7 @@ The code checks cover:
 
 - **Resolution transitions.** The initial stem is a 3×3 convolution with stride 2; the subsequent AAD stages reduce resolution by 2. A stride-1 legend must not describe a reduction in spatial dimensions.
 - **Feature names and shapes.** Backbone features use B2/B3/B4; neck outputs use N2/N3/N4. For the `s` configuration and a 640×640 input, backbone outputs are 128×160×160, 256×80×80, and 256×40×40; neck outputs are 64×160×160, 128×80×80, and 256×40×40, respectively. Shapes exclude the batch dimension.
-- **Container semantics.** In `C3k2_BCSG`, the Boolean argument controls each internal BCSG shortcut. The released container does not switch between C3k=False/True structural branches.
+- **Container semantics.** In `C3k2_BCSG`, the Boolean argument controls each internal BCSG shortcut. The separate trailing `c3k` option selects BCSG (`False`, the default) or standard C3k (`True`). All released experiment configurations retain BCSG; the shortcut argument keeps its original position and meaning.
 - **Head connections.** The three neck features feed the released `Detect_PASF_Final` head, producing P2/P3/P4 predictions.
 
 The revised palette replaces individual fills and relevant gradient endpoints. Convolution blocks use muted blue, splitting uses teal, BCSG containers use lavender, concatenation uses warm sand, and distinct attention/fusion blocks retain consistent color identities. This is an object-level color revision, not an overlay across the whole page.

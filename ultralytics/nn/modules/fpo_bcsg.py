@@ -1,51 +1,12 @@
-"""
-BCSG-v2: Structure-Guided Residual Enhancement Bottleneck
-==========================================================
+"""Channel-spatial gating bottleneck (BCSG) and its C3k2 container.
 
-基于原始 BCSG-v1，仅进行三项核心结构修改：
+BCSG forms local features, applies spatial residual modulation, and then
+computes channel residual modulation from the updated features. Spatial
+response kernels are initialized with Scharr and mean filters and remain
+learnable. Their outputs are sliced into contiguous channel intervals.
 
-1. 主体局部卷积：
-   原 3×3 Depthwise Conv (g=c)
-   -> 固定组宽思想的 3×3 Group Conv
-   默认每组约 32 个通道，并自动寻找可整除的 groups。
-
-2. 空间门控作用方式：
-   原：
-       F <- F * M_sp
-   改：
-       F_sp = F + alpha_sp * F * g_sp
-
-   空间门控作为“结构增强分支”，不直接压制基础特征。
-
-3. 通道门控顺序：
-   原：
-       g_sp = SpatialGate(F)
-       g_ch = ChannelGate(F)
-       F_ref = F * M_sp * M_ch
-
-   改：
-       g_sp = SpatialGate(F)
-       F_sp = F + alpha_sp * F * g_sp
-       g_ch = ChannelGate(F_sp)
-       F_ref = F_sp + alpha_ch * F_sp * g_ch
-
-   即：
-       局部结构定位 -> 空间残差增强 -> 通道选择 -> 通道残差增强
-
-保留：
-- Scharr-X / Scharr-Y / 3×3 Mean 初始化；
-- type-major kernel 排列；
-- 连续切分 dx / dy / low；
-- 可学习 freq_kernel；
-- FCAttn_Gate_Plus 的局部/全局通道建模；
-- C3k2_BCSG 类名与 YAML 接口；
-- 修正后的统一 shortcut 逻辑。
-
-说明：
-- alpha_sp / alpha_ch 使用 sigmoid 约束到 (0, 1)；
-- 初值设为 -1.5，对应 sigmoid(-1.5) ≈ 0.182，
-  使训练初期增强分支较温和，主体特征流接近 identity-preserving。
-"""
+C3k2_BCSG defaults to BCSG blocks. Its trailing c3k option selects standard
+C3k blocks without changing the meaning of existing positional arguments."""
 
 import math
 
@@ -59,18 +20,10 @@ def _select_groups(
     channels: int,
     target_group_width: int = 32,
 ) -> int:
-    """
-    根据“每组约 target_group_width 个通道”的原则选择 groups，
-    并保证 channels % groups == 0。
+    """Choose a divisor of channels starting from channels // target_group_width.
 
-    例如：
-        C=38  -> g=1
-        C=64  -> g=2
-        C=76  -> g=2
-        C=102 -> g=3
-        C=128 -> g=4
-        C=256 -> g=8
-    """
+    Decrease the preferred group count until it divides the channel width;
+    the resulting group width need not equal target_group_width exactly."""
     if channels <= 0:
         raise ValueError(
             f"channels must be positive, got {channels}"
@@ -91,20 +44,13 @@ def _select_groups(
     return groups
 
 class FreqAware_Scharr_Gate(nn.Module):
-    """
-    原始 BCSG-v1 的分区式频率感知空间门控。
+    """Generate a shared-channel spatial gate of shape (B, 1, H, W).
 
-    保留 type-major 核排列：
-        [全部 Scharr-X, 全部 Scharr-Y, 全部 Low-pass]
-
-    保留连续切分：
-        dx  = freq_feat[:, :C]
-        dy  = freq_feat[:, C:2C]
-        low = freq_feat[:, 2C:3C]
-
-    注意：
-    这里不改你已经验证过的“分区式”实现。
-    """
+    The learnable kernel bank is initialized in Scharr-X, Scharr-Y, then mean
+    filter blocks. Grouped convolution produces 3C output channels; contiguous
+    slices Q1, Q2, Q3 form Concat(Q1 + Q2, Q3) before pointwise gate generation.
+    This is the partitioned implementation, not three filters regrouped per
+    input channel. Historical dx/dy/low variable names refer to these slices."""
 
     def __init__(self, dim: int):
         super().__init__()
@@ -139,8 +85,7 @@ class FreqAware_Scharr_Gate(nn.Module):
             dtype=torch.float32,
         ) / 9.0
 
-        # type-major:
-        # [X1...XC, Y1...YC, L1...LC]
+        # Initialize contiguous Scharr-X, Scharr-Y, and mean-filter blocks.
         freq_kernel = torch.zeros(
             dim * 3,
             1,
@@ -164,7 +109,6 @@ class FreqAware_Scharr_Gate(nn.Module):
             .repeat(dim, 1, 1)
         )
 
-        # 保留原始“可学习频率核”设定
         self.freq_kernel = nn.Parameter(
             freq_kernel,
             requires_grad=True,
@@ -225,7 +169,7 @@ class FreqAware_Scharr_Gate(nn.Module):
             groups=c,
         )
 
-        # 保留原始连续区间切分
+        # Slice output-channel intervals without per-input-channel regrouping.
         dx = freq_feat[:, :c]
         dy = freq_feat[:, c:2 * c]
         low = freq_feat[:, 2 * c:]
@@ -244,25 +188,12 @@ class FreqAware_Scharr_Gate(nn.Module):
         return g_sp
 
 class FCAttn_Gate_Plus(nn.Module):
-    """
-    原始 BCSG-v1 的局部-全局通道门控。
+    """Generate a spatially shared channel gate of shape (B, C, 1, 1).
 
-    输入：
-        F_sp
-
-    流程：
-        GAP
-          ├─ Local 1D Conv
-          └─ Global 1×1 Conv
-        -> gamma 融合
-        -> temperature 缩放
-        -> Sigmoid
-        -> g_ch
-
-    与 v1 相比，结构本身不改。
-    唯一区别是 v2 中它接收空间增强后的 F_sp，
-    而不是原始 base F。
-    """
+    Global average pooling feeds local 1D channel convolution and a global
+    pointwise projection. A learned scalar mixes the descriptors; another
+    learned scalar multiplies their combination before sigmoid. In BCSG,
+    the input is the feature after spatial residual modulation."""
 
     def __init__(
         self,
@@ -360,45 +291,12 @@ class FCAttn_Gate_Plus(nn.Module):
         return g_ch
 
 class BCSGBottleneck_Scharr(nn.Module):
-    """
-    BCSG-v2 Bottleneck
+    """Refine local features with sequential spatial and channel residual gates.
 
-    核心路径：
-
-        X
-        |
-        v
-      1×1 Conv
-        |
-        v
-      3×3 GroupConv
-        |
-        v
-      base F
-        |
-        +------> Spatial Gate ------> g_sp
-        |                             |
-        +-----------------------------+
-        |
-        v
-      F_sp = F + alpha_sp * F * g_sp
-        |
-        +------> Channel Gate ------> g_ch
-        |                             |
-        +-----------------------------+
-        |
-        v
-      F_ref = F_sp + alpha_ch * F_sp * g_ch
-        |
-        v
-      + shortcut (optional)
-
-    设计目的：
-    - 主体 GroupConv 恢复局部跨通道交互；
-    - 空间门控只做结构增强，不直接删除弱响应；
-    - 通道选择基于已经完成空间增强的特征；
-    - 两级增强均采用 residual form，保持稳定特征流。
-    """
+    Pointwise and grouped 3x3 convolutions form F. The spatial update is
+    F_sp = F + sigmoid(alpha_sp) * F * g_sp. The channel gate is computed from
+    F_sp, then F_ref = F_sp + sigmoid(alpha_ch) * F_sp * g_ch.
+    When shortcut is enabled, the output also adds the original input."""
 
     def __init__(
         self,
@@ -415,7 +313,6 @@ class BCSGBottleneck_Scharr(nn.Module):
 
         self.c = c
 
-        # 第一层保持原设计
         self.cv1 = Conv(
             c,
             c,
@@ -423,8 +320,6 @@ class BCSGBottleneck_Scharr(nn.Module):
             1,
         )
 
-        # v2 修改 1：
-        # Depthwise(g=c) -> GroupConv
         self.groups = _select_groups(
             c,
             target_group_width,
@@ -438,21 +333,15 @@ class BCSGBottleneck_Scharr(nn.Module):
             g=self.groups,
         )
 
-        # 空间结构门控
         self.intra_spatial = (
             FreqAware_Scharr_Gate(c)
         )
 
-        # 局部-全局通道门控
         self.intra_channel = (
             FCAttn_Gate_Plus(c)
         )
 
-        # v2 修改 2/3：
-        # 两个 enhancement strength 均采用受约束的可学习标量。
-        #
-        # sigmoid(-1.5) ≈ 0.182
-        # 训练初期只进行温和增强。
+        # Sigmoid maps the initial -1.5 strengths to approximately 0.182.
         self.alpha_sp = nn.Parameter(
             torch.tensor(-1.5)
         )
@@ -470,16 +359,10 @@ class BCSGBottleneck_Scharr(nn.Module):
         x: torch.Tensor,
     ) -> torch.Tensor:
 
-        # -------------------------
-        # 1. 基础局部表征
-        # -------------------------
         base = self.cv2(
             self.cv1(x)
         )
 
-        # -------------------------
-        # 2. 空间结构选择
-        # -------------------------
         g_sp = self.intra_spatial(
             base
         )
@@ -488,20 +371,12 @@ class BCSGBottleneck_Scharr(nn.Module):
             self.alpha_sp
         )
 
-        # 残差式空间增强：
-        # gate 低 -> 保留 base
-        # gate 高 -> 增强对应位置
         spatial = (
             base
             + alpha_sp * base * g_sp
         )
 
-        # -------------------------
-        # 3. 通道选择
-        # -------------------------
-        # 关键：
-        # channel gate 不再直接从 base 生成，
-        # 而是在空间结构增强之后生成。
+        # Channel modulation uses the spatially updated features.
         g_ch = self.intra_channel(
             spatial
         )
@@ -510,15 +385,11 @@ class BCSGBottleneck_Scharr(nn.Module):
             self.alpha_ch
         )
 
-        # 残差式通道增强
         refined = (
             spatial
             + alpha_ch * spatial * g_ch
         )
 
-        # -------------------------
-        # 4. Bottleneck shortcut
-        # -------------------------
         return (
             x + refined
             if self.add
@@ -526,21 +397,20 @@ class BCSGBottleneck_Scharr(nn.Module):
         )
 
 class C3k2_BCSG(nn.Module):
-    """
-    BCSG-v2 的 C3k2 容器。
+    """Split features, collect successive block outputs, and fuse their concatenation.
 
-    YAML 接口保持兼容：
-        C3k2_BCSG, [c2, shortcut, e]
+    Args:
+        c1: Input channels.
+        c2: Output channels.
+        n: Number of internal blocks.
+        shortcut: Enable residual shortcuts within each internal block.
+        e: Hidden-channel expansion ratio, with hidden width int(c2 * e).
+        g: Group count passed to standard C3k blocks when c3k is enabled.
+        c3k: Select standard C3k blocks; False retains the reported BCSG path.
 
-    shortcut 使用修正后的统一语义：
-    - shortcut=True:
-        所有内部 BCSG Bottleneck 均使用 shortcut
-    - shortcut=False:
-        所有内部 BCSG Bottleneck 均关闭 shortcut
-
-    对 YOLO11s 而言 depth scaling 后通常 n=1，
-    对更大 scale 也保持一致、清晰的语义。
-    """
+    YAML arguments are [c2, shortcut, e, g, c3k]; omitted arguments retain
+    their defaults. The parser supplies c1 and the scaled repeat count n.
+    Existing [c2, shortcut, e] configurations therefore keep using BCSG."""
 
     def __init__(
         self,
@@ -550,11 +420,12 @@ class C3k2_BCSG(nn.Module):
         shortcut: bool = True,
         e: float = 0.5,
         g: int = 1,
+        c3k: bool = False,
     ):
         super().__init__()
 
-        # 保留接口兼容
-        _ = g
+        # The trailing option preserves the existing shortcut argument position.
+        self.c3k = bool(c3k)
 
         self.c = int(
             c2 * e
@@ -580,13 +451,17 @@ class C3k2_BCSG(nn.Module):
             1,
         )
 
-        self.m = nn.ModuleList(
-            BCSGBottleneck_Scharr(
-                self.c,
-                shortcut=shortcut,
+        if self.c3k:
+            from ultralytics.nn.modules.block import C3k
+
+            self.m = nn.ModuleList(
+                C3k(self.c, self.c, 2, shortcut, g) for _ in range(n)
             )
-            for _ in range(n)
-        )
+        else:
+            self.m = nn.ModuleList(
+                BCSGBottleneck_Scharr(self.c, shortcut=shortcut)
+                for _ in range(n)
+            )
 
     def forward(
         self,

@@ -1,0 +1,158 @@
+{
+  "category_ids": {
+    "1": "car",
+    "2": "truck",
+    "3": "bus"
+  },
+  "policy": "Existing YOLO train/val split, float32 label deduplication as Ultralytics; original-image xywh clipped at boundaries; empty images retained.",
+  "splits": {
+    "train": {
+      "images": 20533,
+      "instances": 368664,
+      "sequences": [
+        "M0201",
+        "M0202",
+        "M0206",
+        "M0207",
+        "M0210",
+        "M0402",
+        "M0501",
+        "M0603",
+        "M0604",
+        "M0605",
+        "M0702",
+        "M0703",
+        "M0704",
+        "M0901",
+        "M0902",
+        "M1002",
+        "M1005",
+        "M1006",
+        "M1102",
+        "M1201",
+        "M1202",
+        "M1304",
+        "M1305",
+        "M1306"
+      ],
+      "duplicate_rows_removed": 0,
+      "missing_labels_kept_as_empty": 985,
+      "annotation_sha256": "06a471f68b328c4ce1df87a2dc583c6b9aab4f109728cb216e1d94e8b99c59ea",
+      "manifest_sha256": "bb8a81a63fe5e587786deb115edb414f891abe5115c35958490511a35c76d2b9",
+      "per_sequence_images": {
+        "M0201": 1076,
+        "M0202": 291,
+        "M0206": 562,
+        "M0207": 885,
+        "M0210": 583,
+        "M0402": 410,
+        "M0501": 352,
+        "M0603": 2035,
+        "M0604": 1079,
+        "M0605": 787,
+        "M0702": 777,
+        "M0703": 683,
+        "M0704": 832,
+        "M0901": 1906,
+        "M0902": 384,
+        "M1002": 660,
+        "M1005": 537,
+        "M1006": 708,
+        "M1102": 967,
+        "M1201": 1197,
+        "M1202": 472,
+        "M1304": 1550,
+        "M1305": 600,
+        "M1306": 1200
+      }
+    },
+    "val": {
+      "images": 3610,
+      "instances": 38137,
+      "sequences": [
+        "M0101",
+        "M0204",
+        "M0301",
+        "M0401",
+        "M1003",
+        "M1008"
+      ],
+      "duplicate_rows_removed": 0,
+      "missing_labels_kept_as_empty": 0,
+      "annotation_sha256": "af281b4e1961d81ef532aa94c831c193065bb8908ea0149ced044ed2fbe45d3e",
+      "manifest_sha256": "624426247852d82a06e6f815f430f44cdfa3e7c16695d63ffaa25b41af7df110",
+      "per_sequence_images": {
+        "M0101": 407,
+        "M0204": 350,
+        "M0301": 325,
+        "M0401": 613,
+        "M1003": 1346,
+        "M1008": 569
+      }
+    },
+    "test": {
+      "images": 16592,
+      "sequences": [
+        "M0203",
+        "M0205",
+        "M0208",
+        "M0209",
+        "M0403",
+        "M0601",
+        "M0602",
+        "M0606",
+        "M0701",
+        "M0801",
+        "M0802",
+        "M1001",
+        "M1004",
+        "M1007",
+        "M1009",
+        "M1101",
+        "M1301",
+        "M1302",
+        "M1303",
+        "M1401"
+      ],
+      "per_sequence_images": {
+        "M0203": 1007,
+        "M0205": 646,
+        "M0208": 265,
+        "M0209": 1576,
+        "M0403": 514,
+        "M0601": 372,
+        "M0602": 480,
+        "M0606": 1374,
+        "M0701": 1308,
+        "M0801": 298,
+        "M0802": 1101,
+        "M1001": 1859,
+        "M1004": 269,
+        "M1007": 659,
+        "M1009": 604,
+        "M1101": 864,
+        "M1301": 1182,
+        "M1302": 719,
+        "M1303": 445,
+        "M1401": 1050
+      }
+    }
+  },
+  "provenance": {
+    "record": "UAVDT split audit retained on 2026-10-18",
+    "source_record_sha256": "ae56edd2b712c432ed4b8744bfd09e4d43b5db449db26a764b161f74d092accd",
+    "scope": "Existing custom 24/6 split of official training sequences; official test sequences are separate."
+  },
+  "selection": {
+    "seed": 42,
+    "operation": "random.Random(42).sample(sorted(all_30_training_sequences), 6)",
+    "verified_against_saved_sequence_lists": true
+  },
+  "live_verification": {
+    "date": "2026-10-26",
+    "method": "Read-only recursive image inventory on the author server; sequence IDs extracted from relative image paths.",
+    "scope": "Image membership and per-sequence counts only; saved annotation hashes remain from the earlier audit.",
+    "all_image_paths_have_sequence_ids": true,
+    "all_three_splits_are_sequence_disjoint": true
+  }
+}

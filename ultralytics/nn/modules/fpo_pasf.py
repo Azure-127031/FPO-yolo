@@ -1,9 +1,10 @@
 # Ultralytics AGPL-3.0 License - https://ultralytics.com/license
-"""Paper-final PASF head used by FPO-YOLO.
+"""Position-adaptive scale-fusion (PASF) head for FPO-YOLO.
 
-This module is intentionally isolated from the historical ASFF experiments so
-the final paper architecture cannot silently resolve to Detect_ASFF1/ASFFV5.
-"""
+Three branches align the neck features to P2, P3, and P4, respectively.
+Each branch learns location-wise scale weights and refines the fused
+feature before the decoupled regression and classification branches.
+The retained ASFF_Stable name identifies this fusion implementation."""
 
 import math
 
@@ -19,6 +20,7 @@ __all__ = ["Detect_PASF_Final"]
 
 
 def autopad(k, p=None, d=1):
+    """Compute same-padding for an odd effective kernel when padding is unspecified."""
     if d > 1:
         k = d * (k - 1) + 1 if isinstance(k, int) else [d * (x - 1) + 1 for x in k]
     if p is None:
@@ -27,6 +29,7 @@ def autopad(k, p=None, d=1):
 
 
 class Conv(nn.Module):
+    """Apply convolution, batch normalization, and the configured activation."""
     default_act = nn.SiLU()
 
     def __init__(self, c1, c2, k=1, s=1, p=None, g=1, d=1, act=True):
@@ -40,6 +43,10 @@ class Conv(nn.Module):
 
 
 class CoordAttn(nn.Module):
+    """Modulate features with height- and width-dependent sigmoid gates.
+
+    Pool along each axis, transform the concatenated descriptors jointly,
+    then split and broadcast the resulting directional gates."""
     def __init__(self, c, reduction=32):
         super().__init__()
         self.pool_h = nn.AdaptiveAvgPool2d((None, 1))
@@ -60,6 +67,7 @@ class CoordAttn(nn.Module):
 
 
 class PureAlign(nn.Module):
+    """Project channels, then use average pooling or nearest-neighbor upsampling."""
     def __init__(self, c1, c2, scale=2, mode="down"):
         super().__init__()
         self.mode = mode
@@ -81,6 +89,13 @@ class PureAlign(nn.Module):
 
 
 class ASFF_Stable(nn.Module):
+    """Fuse input features ordered [N2, N3, N4] at one output resolution.
+
+    Levels 2, 1, 0 correspond to P2, P3, P4 outputs. Aligned features generate
+    three logits per position; softmax along the scale dimension normalizes
+    their weights. A projection of the fused feature forms the shortcut,
+    while convolution and directional attention form the refinement branch.
+    The refinement coefficient beta is a fixed buffer initialized to 0.5."""
     def __init__(self, level, ch, multiplier=1):
         super().__init__()
         self.level = level
@@ -113,6 +128,7 @@ class ASFF_Stable(nn.Module):
             nn.Conv2d(16, 3, 1, bias=False),
             nn.BatchNorm2d(3),
         )
+        # Zero initial logits give equal scale weights before learning.
         nn.init.constant_(self.weight_gen[1].weight, 0.0)
         self.temp = nn.Parameter(torch.tensor(1.0))
         self.expand = nn.Sequential(
@@ -123,6 +139,7 @@ class ASFF_Stable(nn.Module):
         self.shortcut = (
             nn.Identity() if self.inter_dim == self.output_dim else Conv(self.inter_dim, self.output_dim, 1)
         )
+        # beta is fixed; it is stored with the state rather than optimized.
         self.register_buffer("beta", torch.tensor(0.5))
 
     def forward(self, x):
@@ -136,6 +153,7 @@ class ASFF_Stable(nn.Module):
 
 
 class DFL(nn.Module):
+    """Convert per-side distance distributions to their expected distances."""
     def __init__(self, c1=16):
         super().__init__()
         self.conv = nn.Conv2d(c1, 1, 1, bias=False).requires_grad_(False)
@@ -149,6 +167,12 @@ class DFL(nn.Module):
 
 
 class Detect_PASF_Final(Detect):
+    """Apply PASF fusion and decoupled prediction at three detection levels.
+
+    Training returns raw prediction maps. Evaluation decodes distance
+    distributions and returns (predictions, maps), or predictions alone when
+    export is enabled. The base Detect class supplies framework integration;
+    this class constructs its own fusion and prediction layers."""
     dynamic = False
     export = False
     shape = None
@@ -156,7 +180,8 @@ class Detect_PASF_Final(Detect):
     strides = torch.empty(0)
 
     def __init__(self, nc=80, ch=(), multiplier=1):
-        # Bypass Detect.__init__ because PASF defines its own fusion and prediction branches.
+
+        # Construct PASF-specific branches instead of the base Detect branches.
         nn.Module.__init__(self)
         self.nc = nc
         self.nl = len(ch)
@@ -177,6 +202,7 @@ class Detect_PASF_Final(Detect):
         self.l2_fusion = ASFF_Stable(level=2, ch=ch, multiplier=multiplier)
 
     def forward(self, x):
+        # Restore P2, P3, P4 order after level-indexed fusion.
         x = [self.l2_fusion(x), self.l1_fusion(x), self.l0_fusion(x)]
         shape = x[0].shape
         for i in range(self.nl):

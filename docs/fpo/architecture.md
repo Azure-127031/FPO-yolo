@@ -35,7 +35,7 @@ For scale s at 640×640, B2/B3/B4 have shapes 128×160×160, 256×80×80, and 25
 
 ## BCSG from multiplicative gating to residual modulation
 
-The version notes in [`fpo_bcsg.py`](../../ultralytics/nn/modules/fpo_bcsg.py) identify three changes from BCSG-v1 to BCSG-v2. This module version is separate from the second edition of the repository documentation.
+The retained implementation history identifies three changes from BCSG-v1 to the current [`BCSG implementation`](../../ultralytics/nn/modules/fpo_bcsg.py). This module version is separate from the second edition of the repository documentation.
 
 | Earlier operation | Current implementation | Design intent |
 |---|---|---|
@@ -45,7 +45,7 @@ The version notes in [`fpo_bcsg.py`](../../ultralytics/nn/modules/fpo_bcsg.py) i
 
 Both raw increment parameters start at −1.5, giving about 0.182 after sigmoid. The spatial response bank starts from Scharr-X, Scharr-Y, and mean kernels but remains learnable. Its outputs are split into contiguous ranges; the documentation therefore describes contiguous partitions rather than an independently paired fixed derivative bank for every input channel.
 
-`C3k2_BCSG` splits features, collects serial bottleneck outputs, concatenates them, and applies pointwise fusion. Its Boolean argument controls **internal bottleneck shortcuts**; False layers still use BCSG. The response-organization comparison supports the current partitioned variant, but does not separately measure each of these three v1→v2 changes.
+`C3k2_BCSG` splits features, collects serial bottleneck outputs, concatenates them, and applies pointwise fusion. The existing YAML Boolean controls **internal bottleneck shortcuts**; False layers still use BCSG. The separate trailing `c3k=False` argument preserves this behavior; setting `c3k=True` uses standard C3k blocks instead. YAML arguments are ordered `[c2, shortcut, e, g, c3k]`, with omitted arguments retaining their defaults. The released configurations retain BCSG. [CPU compatibility checks](data/bcsg-compatibility-check.json) compare the default branch with the pre-option implementation and exercise the optional branch; they do not constitute new accuracy experiments. The response-organization comparison supports the current partitioned variant, but does not separately measure each of these three v1→v2 changes.
 
 ## AAD aggregates deformable responses before downsampling
 
@@ -58,7 +58,7 @@ offset = tanh(predicted_offset) * abs(max_offset) * gate
 gate shape = B × 1 × 1 × 1
 ```
 
-The amplitude gate is one shared scalar per sample, not an independent map at every pixel. `max_offset` is learnable. The defined `res_scale` does not participate in the current forward return path, so it is not described as an active residual branch. Comments claiming parameter halving or improved stability are not treated as independently verified results; [E3](experiments.md#e3-aad-sampling-variants) evaluates the complete replacement.
+MMCV consumes interleaved height/width offsets. The historical `offset_x`/`offset_y` parameter names feed those slots in that order; the names are retained for checkpoint compatibility. The amplitude gate is one shared scalar per sample, not an independent map at every pixel. `max_offset` is learnable. The defined `res_scale` does not participate in the current forward return path, so it is not described as an active residual branch. Earlier comments claiming parameter halving or improved stability have been removed because they were not independently verified; [E3](experiments.md#e3-aad-sampling-variants) evaluates the complete replacement.
 
 ## CIHF interacts before high-resolution aggregation
 
@@ -84,7 +84,7 @@ The current configuration uses 128 channels for interaction and aggregation; the
 | Refinement | Convolution, directional attention, and projection; combine with the shortcut using a fixed coefficient of 0.5 |
 | Prediction | Fuse independently for P2/P3/P4, then apply classification/regression branches and 16-bin DFL decoding |
 
-`beta=0.5` is a buffer, not a learned parameter. The temperature uses `abs()` without an additional positive lower clamp in the current implementation. These are source-code observations, not changes made in this documentation update. Head-replacement results support PASF as a whole, not separate attribution to initialization, temperature, or directional attention.
+`beta=0.5` is a buffer, not a learned parameter. Head-replacement results support PASF as a whole, not separate attribution to initialization, temperature, or directional attention.
 
 ## From module files to a runnable model
 

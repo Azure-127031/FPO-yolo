@@ -1777,7 +1777,7 @@
       },
       "FPO-YOLO-n": {
         "epochs": 200,
-        "batch": 12,
+        "batch": 16,
         "optimizer": "SGD",
         "patience": 100,
         "seed": 0,
@@ -1807,7 +1807,7 @@
       },
       "FPO-YOLO-s": {
         "epochs": 200,
-        "batch": 12,
+        "batch": 16,
         "optimizer": "SGD",
         "patience": 100,
         "seed": 0,
@@ -2362,5 +2362,18 @@
     "UAVDT values use the 24/6 sequence-level validation split, not the official test split.",
     "Additional datasets are trained independently; evaluation does not measure zero-shot transfer."
   ],
-  "complexity_scope": "VisDrone2019 profiling records; class count and model fusion state affect parameter counts."
+  "complexity_scope": "VisDrone2019 profiling records; class count and model fusion state affect parameter counts.",
+  "metadata_corrections": [
+    {
+      "date": "2026-10-26",
+      "fields": [
+        "training_settings.VisDrone2019.FPO-YOLO-n.batch",
+        "training_settings.VisDrone2019.FPO-YOLO-s.batch"
+      ],
+      "previous_value": 12,
+      "corrected_value": 16,
+      "basis": "Author explicitly corrected the previously supplied settings: VisDrone batch was 16. No new training or re-evaluation was performed for this metadata correction."
+    }
+  ],
+  "metadata_updated": "2026-10-26"
 }

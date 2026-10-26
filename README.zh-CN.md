@@ -26,6 +26,8 @@ FPO-YOLO 基于 YOLO11，采用步长为 4、8、16 的 **P2–P4 预测层**，
 
 ## 更新记录
 
+- **2026-10-26：**将 VisDrone 训练批大小更正为16；补全可选 C3k 分支说明，默认仍为 BCSG；直接清点服务器确认 UAVDT 序列划分；整理项目代码注释，并延续[研究与绘图历程](docs/fpo/development.zh-CN.md)。已报告检测结果保持不变。
+
 - **2026-10-11：**同步当前论文的验证/test-dev 结果及完整模型引用，补充 AP75、COCO 尺寸 AP、更新图件及[机器可读结果快照](docs/fpo/data/reported-results.json)。
 - **2026-10-10：**精修中英文阅读入口与使用示例，补充同尺度 test-dev 对照和软件引用，保留完整代码、实验与图件演进记录。
 - **2026-10-09：**完善第二版中英文文档，加入 UAVDT、AI-TOD-v2 结果及各自评估设置；补全代码改进说明、实验历程、早期时间节点和图件制作过程。
@@ -205,10 +207,10 @@ VisDrone2019/
 ### 3. 从随机初始化训练
 
 ```bash
-python scripts/train.py --scale s --data configs/visdrone.yaml --batch 12 --device 0
+python scripts/train.py --scale s --data configs/visdrone.yaml --batch 16 --device 0
 ```
 
-公开训练入口从 YAML 初始化，使用 `imgsz=640`、最多 200 轮、SGD、patience100、AMP、`close_mosaic=10` 及 seed0。已报告 VisDrone FPO-n/s 使用 `--batch 12`，UAVDT 使用 `--batch 16`，上例对应 VisDrone。脚本仍默认16，并支持显式覆盖批大小。此入口对应 VisDrone/UAVDT 设置；**AI-TOD-v2 应使用单独的设置**。
+公开训练入口从 YAML 初始化，使用 `imgsz=640`、最多 200 轮、SGD、patience100、AMP、`close_mosaic=10` 及 seed0。已确认 VisDrone 与 UAVDT 的训练批大小均为16，与脚本默认值一致，也可显式覆盖。此入口对应 VisDrone/UAVDT 设置；**AI-TOD-v2 应使用单独的设置**。
 
 ### 4. 评估验证集选择的权重
 

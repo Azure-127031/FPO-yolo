@@ -1,0 +1,30 @@
+{
+  "updated": "2026-10-26",
+  "note": "Private working records are identified by title and digest; paths and server credentials are not published. A record date does not imply the first invention date of a model.",
+  "records": [
+    {
+      "id": "method_review_20261019",
+      "record_name": "第三章修改对照.md",
+      "archive_group": "论文_方法论行文与机制阐释精修_20261019",
+      "sha256": "78da341f1cc7f16010558daed4d1eb1c558a9f80996dac2dd26a0f32f69a79b1"
+    },
+    {
+      "id": "feedback_restoration_20261020",
+      "record_name": "恢复内容与导师文献对照.md",
+      "archive_group": "论文_LYA底稿恢复与三轮意见协同_20261020",
+      "sha256": "26810ad39fda8118140be79f943b350c21a5576321bc14aabd98b2ccce1a1d6e"
+    },
+    {
+      "id": "figure_and_remdet_20261025",
+      "record_name": "修订说明.md",
+      "archive_group": "论文_总图与PR回填_20261025",
+      "sha256": "b79a261d3c6cc79f52e02289790b966824051cce05a5537f2b2a3b8aefea9822"
+    },
+    {
+      "id": "coherence_layout_20261026",
+      "record_name": "本轮审读说明.md",
+      "archive_group": "论文_英文连贯性与排版复核_20261026",
+      "sha256": "1d450312651b6a05bd86d46bba2a441cbc93dfa1e58ddb4d3db364a27e44d677"
+    }
+  ]
+}

@@ -26,6 +26,8 @@ On **VisDrone2019 validation**, FPO-YOLO-s reaches **48.1% mAP50 / 29.2% mAP50â€
 
 ## Updates
 
+- **2026-10-26:** Confirmed the VisDrone batch size as 16; documented the optional C3k branch with BCSG retained by default; checked UAVDT sequence membership directly on the server; revised project comments and extended the [development history](docs/fpo/development.md). The reported detection results are unchanged.
+
 - **2026-10-11:** Synchronized validation/test-dev results and complete-model references with the current manuscript; added AP75, COCO size AP, updated plots, and a [machine-readable result snapshot](docs/fpo/data/reported-results.json).
 
 - **2026-10-10:** Refined bilingual navigation and usage examples, added scale-matched test-dev comparisons and a software citation, and retained the full code, experiment, and figure-development records.
@@ -206,10 +208,10 @@ Each image has a same-stem label file with rows `class_id x_center y_center widt
 ### 3. Train from random initialization
 
 ```bash
-python scripts/train.py --scale s --data configs/visdrone.yaml --batch 12 --device 0
+python scripts/train.py --scale s --data configs/visdrone.yaml --batch 16 --device 0
 ```
 
-The training entry point uses YAML initialization, `imgsz=640`, up to 200 epochs, SGD, patience 100, AMP, and `close_mosaic=10`, with seed 0. The reported VisDrone FPO-n/s runs use `--batch 12`; UAVDT uses `--batch 16`. The command above matches the VisDrone setting. The script retains 16 as its default and accepts an explicit batch override. The script is intended for the VisDrone/UAVDT settings; **AI-TOD-v2 requires the separate protocol below**.
+The training entry point uses YAML initialization, `imgsz=640`, up to 200 epochs, SGD, patience 100, AMP, and `close_mosaic=10`, with seed 0. The confirmed VisDrone and UAVDT training batch size is 16, matching the script default. An explicit batch override is available. The script is intended for the VisDrone/UAVDT settings; **AI-TOD-v2 requires the separate protocol below**.
 
 ### 4. Evaluate validation-selected weights
 

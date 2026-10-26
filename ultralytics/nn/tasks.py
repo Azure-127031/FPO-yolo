@@ -1631,6 +1631,7 @@ def parse_model(d, ch, verbose=True):
             args = [ch[f]]
         elif m is Concat:
             c2 = sum(ch[x] for x in f)
+        # Detection heads, including PASF, receive all source feature-channel widths.
         elif m in frozenset(
             {
                 Detect,
@@ -1651,6 +1652,7 @@ def parse_model(d, ch, verbose=True):
             if m in {Detect, YOLOEDetect, Segment, YOLOESegment, Pose, OBB}:
                 m.legacy = legacy
         elif m is ScalSeq_SBA:
+            # CIHF receives backbone channel widths and keeps its explicit output width.
             args = [[ch[x] for x in f], *args]
             c2 = args[1]
         elif m is RTDETRDecoder:  # special case, channels arg must be passed in index 1

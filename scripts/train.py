@@ -1,10 +1,7 @@
-"""Train FPO-YOLO with a configurable training batch size."""
+"""Train FPO-YOLO using the VisDrone/UAVDT recipe; AI-TOD-v2 has a separate recipe."""
 
 import argparse
 from pathlib import Path
-
-from ultralytics import YOLO
-
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -18,7 +15,7 @@ def parse_args():
         "--batch",
         type=int,
         default=16,
-        help="Training batch size (reported VisDrone FPO n/s:12; UAVDT:16)",
+        help="Training batch size (confirmed VisDrone/UAVDT:16; AI-TOD-v2 uses a separate protocol)",
     )
     args = parser.parse_args()
     if args.batch < 1:
@@ -28,6 +25,8 @@ def parse_args():
 
 def main():
     args = parse_args()
+    from ultralytics import YOLO
+
     model = YOLO(f"yolo11{args.scale}-fpo.yaml")
     model.train(
         data=str(args.data),

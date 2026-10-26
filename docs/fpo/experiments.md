@@ -162,6 +162,10 @@ The homepage rounds these same results to one decimal place. This table uses the
 
 The October 11 checkpoint evaluation adds strict-IoU AP and original-coordinate COCO size AP for VisDrone, UAVDT, and AI-TOD-v2. See the [homepage tables](../../README.md#ap75-and-object-size-results) and [full numeric snapshot](data/reported-results.json). Full-model AP50 references in E2–E6 use 48.1%; other control measurements retain their recorded values, including SIoU 47.9%. VisDrone/UAVDT primary evaluation uses batch 16 / FP16, and AI-TOD-v2 retains batch 15 / FP32.
 
+## October 25–26 record completion
+
+The retained RemDet-S epoch-26 predictions supplied the missing precision and recall in the manuscript; this was an evaluation of saved predictions, not a new training run. Newly planned supplementary training was stopped and contributes no reported results. On October 26, a live server image inventory confirmed the existing UAVDT train/validation split; the exact sequence lists and counts are in [the split record](../../configs/uavdt-split.json). The optional C3k branch remains separate from the reported BCSG experiments.
+
 ## Reading and verification
 
 - **Final public results:** [Project home](../../README.md#results).
