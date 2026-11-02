@@ -2161,8 +2161,8 @@
         {
           "configuration": "DCNv2*",
           "values": [
-            57.9,
-            45.3,
+            57.5,
+            45.8,
             48.1,
             29.2,
             5.7
@@ -2192,8 +2192,8 @@
         {
           "configuration": "Contiguous partition",
           "values": [
-            57.9,
-            45.3,
+            57.5,
+            45.8,
             48.1,
             29.2,
             4.13
@@ -2263,8 +2263,8 @@
         {
           "configuration": "PASF",
           "values": [
-            57.9,
-            45.3,
+            57.5,
+            45.8,
             48.1,
             29.2,
             5.7
@@ -2346,8 +2346,8 @@
         {
           "configuration": "CIoU",
           "values": [
-            57.9,
-            45.3,
+            57.5,
+            45.8,
             48.1,
             29.2
           ]
@@ -2375,5 +2375,59 @@
       "basis": "Author explicitly corrected the previously supplied settings: VisDrone batch was 16. No new training or re-evaluation was performed for this metadata correction."
     }
   ],
-  "metadata_updated": "2026-10-26"
+  "metadata_updated": "2026-10-26",
+  "manuscript_reference_correction_20261102": {
+    "changes": [
+      {
+        "table": "aad_dcn_compare",
+        "configuration": "DCNv2*",
+        "old_PR": [
+          57.9,
+          45.3
+        ],
+        "new_PR": [
+          57.5,
+          45.8
+        ]
+      },
+      {
+        "table": "bcsg_config",
+        "configuration": "Contiguous partition",
+        "old_PR": [
+          57.9,
+          45.3
+        ],
+        "new_PR": [
+          57.5,
+          45.8
+        ]
+      },
+      {
+        "table": "head_compare",
+        "configuration": "PASF",
+        "old_PR": [
+          57.9,
+          45.3
+        ],
+        "new_PR": [
+          57.5,
+          45.8
+        ]
+      },
+      {
+        "table": "loss_compare",
+        "configuration": "CIoU",
+        "old_PR": [
+          57.9,
+          45.3
+        ],
+        "new_PR": [
+          57.5,
+          45.8
+        ]
+      }
+    ],
+    "basis": "Independent evaluation of yolo11--P2179/best.pt; SHA256 17e93ac9ebd1ba2de5d08c086164f4185d2a0d55e3f5858569873dc090579116. Precision 57.54417156128596%, recall 45.84459238315709%.",
+    "scope": "Only the P/R pairs in four full-model reference rows are synchronized; other variants retain historical records and are not re-evaluated. This file does not add new evaluation results."
+  }
 }

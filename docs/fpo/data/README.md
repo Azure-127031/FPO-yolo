@@ -9,3 +9,5 @@
 - `control_comparisons`: manuscript control tables; `columns` defines the order of each `values` array. The complete-model AP50 references use 48.1%; SIoU remains the independent 47.9% result.
 
 The snapshot includes aggregate metrics and hashes. It contains no private server paths, credentials, dataset images, or trained weights. VisDrone/UAVDT checkpoints were re-evaluated with batch16/FP16; AI-TOD-v2 retains batch15/FP32. COCO size AP uses maxDets=300 and is reported separately from the native Ultralytics metrics.
+
+On November 2, 2026, the P/R pairs in four full-model control-reference rows were synchronized to the same independent evaluation as their AP values: P=57.5%, R=45.8%, mAP50=48.1%, and mAP50-95=29.2%. The correction record preserves previous values and checkpoint provenance. Other variants and complexity/latency records were not re-evaluated or changed.

@@ -86,7 +86,7 @@ The final implementation compresses offsets, applies a learnable amplitude and g
 | Response organization | Precision | Recall | mAP50 | mAP50–95 | Parameters (M) |
 |---|---:|---:|---:|---:|---:|
 | Per-channel pairing | 58.8 | 44.2 | 47.2 | 28.7 | 3.99 |
-| Contiguous grouping, current version | 57.9 | 45.3 | 48.1 | 29.2 | 4.13 |
+| Contiguous grouping, current version | 57.5 | 45.8 | 48.1 | 29.2 | 4.13 |
 
 The selected configuration has higher AP and recall, more parameters, and lower precision. It therefore does not improve every metric. This comparison also does not isolate each historical convolution or residual-design change in BCSG. [BCSG implementation and lineage](architecture.md#bcsg-from-multiplicative-gating-to-residual-modulation)
 
@@ -174,3 +174,7 @@ The retained RemDet-S epoch-26 predictions supplied the missing precision and re
 - **Figures, manuscript revisions, and versions:** [Research and figure history](development.md).
 
 The release does not yet include per-run logs, trained weights, all historical ablation configurations, or every plotting script. Recorded comparisons do not substitute for unperformed sub-operation ablations, multi-seed replication, official UAVDT testing, or deployment evaluation. Future additions should associate each new claim with configurations, a code commit, checkpoint selection, and evaluation settings.
+
+### November 2, 2026: full-model reference consistency
+
+The full-model reference rows for DCNv2*, contiguous BCSG grouping, PASF, and CIoU now use precision 57.5%, recall 45.8%, mAP50 48.1%, and mAP50-95 29.2% from the same retained independent evaluation. Its unrounded mAP50 is 48.126576180687264%. This corrects historical P/R values that had been combined with updated AP values. Other variants and complexity/latency records are unchanged; no new training or evaluation was performed. The result snapshot records the previous values and checkpoint SHA256.
