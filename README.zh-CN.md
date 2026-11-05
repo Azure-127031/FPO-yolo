@@ -11,6 +11,8 @@ FPO-YOLO 基于 YOLO11，采用步长为 4、8、16 的 **P2–P4 预测层**，
 <p align="center">
   <img src="docs/fpo/assets/architecture.png" alt="FPO-YOLO 整体结构、P2–P4 检测路径及 BCSG 容器" width="100%">
 </p>
+当前图片与投稿稿件一致；[四个模块图](docs/fpo/architecture.zh-CN.md#当前方法图)及[旧图历程](docs/fpo/development.zh-CN.md)可单独查看。
+
 
 **结构总览。**BCSG 与 AAD 处理局部特征及尺度转换；CIHF 为高分辨率颈部补充上下文；PASF 将三个颈部输出分别融合至 P2、P3、P4 预测层。[逐层查看代码连接 →](docs/fpo/architecture.zh-CN.md)
 

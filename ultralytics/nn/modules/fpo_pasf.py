@@ -43,10 +43,7 @@ class Conv(nn.Module):
 
 
 class CoordAttn(nn.Module):
-    """Modulate features with height- and width-dependent sigmoid gates.
-
-    Pool along each axis, transform the concatenated descriptors jointly,
-    then split and broadcast the resulting directional gates."""
+    """Pool along each axis and apply separate height and width gates."""
     def __init__(self, c, reduction=32):
         super().__init__()
         self.pool_h = nn.AdaptiveAvgPool2d((None, 1))
@@ -59,6 +56,7 @@ class CoordAttn(nn.Module):
         _, _, h, w = x.size()
         x_h = self.pool_h(x).permute(0, 1, 3, 2)
         x_w = self.pool_w(x)
+        # Join the H and W descriptors, then split them back after projection.
         y = self.conv(torch.cat([x_h, x_w], dim=3))
         a_h, a_w = torch.split(y, [h, w], dim=3)
         a_h = self.sigmoid(a_h.permute(0, 1, 3, 2))
@@ -67,7 +65,7 @@ class CoordAttn(nn.Module):
 
 
 class PureAlign(nn.Module):
-    """Project channels, then use average pooling or nearest-neighbor upsampling."""
+    """Project channels, then pool, upsample, or keep the spatial size."""
     def __init__(self, c1, c2, scale=2, mode="down"):
         super().__init__()
         self.mode = mode
@@ -89,13 +87,12 @@ class PureAlign(nn.Module):
 
 
 class ASFF_Stable(nn.Module):
-    """Fuse input features ordered [N2, N3, N4] at one output resolution.
+    """Fuse [N2, N3, N4] at one prediction resolution.
 
-    Levels 2, 1, 0 correspond to P2, P3, P4 outputs. Aligned features generate
-    three logits per position; softmax along the scale dimension normalizes
-    their weights. A projection of the fused feature forms the shortcut,
-    while convolution and directional attention form the refinement branch.
-    The refinement coefficient beta is a fixed buffer initialized to 0.5."""
+    level 2 targets P2, level 1 targets P3, and level 0 targets P4.
+    After alignment, softmax assigns three scale weights at each position.
+    The weighted feature feeds a shortcut and a refinement branch; beta is
+    a fixed buffer with value 0.5."""
     def __init__(self, level, ch, multiplier=1):
         super().__init__()
         self.level = level
@@ -147,6 +144,7 @@ class ASFF_Stable(nn.Module):
         l0 = self.resample_0(x4)
         l1 = self.resample_1(x3)
         l2 = self.resample_2(x2)
+        # Normalize across scales at each pixel, with weights shared by channels.
         w = F.softmax(self.weight_gen(l0 + l1 + l2) / self.temp.abs(), dim=1)
         fused = l0 * w[:, 0:1] + l1 * w[:, 1:2] + l2 * w[:, 2:3]
         return self.shortcut(fused) + self.beta * self.expand(fused)
@@ -157,6 +155,7 @@ class DFL(nn.Module):
     def __init__(self, c1=16):
         super().__init__()
         self.conv = nn.Conv2d(c1, 1, 1, bias=False).requires_grad_(False)
+        # Fixed bin indices turn the softmax distribution into its expectation.
         x = torch.arange(c1, dtype=torch.float)
         self.conv.weight.data[:] = nn.Parameter(x.view(1, c1, 1, 1))
         self.c1 = c1
@@ -167,12 +166,11 @@ class DFL(nn.Module):
 
 
 class Detect_PASF_Final(Detect):
-    """Apply PASF fusion and decoupled prediction at three detection levels.
+    """Fuse neck features separately for P2, P3, and P4, then predict.
 
-    Training returns raw prediction maps. Evaluation decodes distance
-    distributions and returns (predictions, maps), or predictions alone when
-    export is enabled. The base Detect class supplies framework integration;
-    this class constructs its own fusion and prediction layers."""
+    Training returns three raw maps. Evaluation decodes box distributions
+    and returns (predictions, raw maps); export returns predictions alone.
+    Detect supplies framework integration, while this class builds the layers."""
     dynamic = False
     export = False
     shape = None
@@ -212,6 +210,7 @@ class Detect_PASF_Final(Detect):
         if self.dynamic or self.shape != shape:
             self.anchors, self.strides = (x.transpose(0, 1) for x in make_anchors(x, self.stride, 0.5))
             self.shape = shape
+        # Flatten the three grids into one candidate axis before box decoding.
         x_cat = torch.cat([xi.view(shape[0], self.no, -1) for xi in x], 2)
         box, cls = x_cat.split((self.reg_max * 4, self.nc), 1)
         dbox = dist2bbox(self.dfl(box), self.anchors.unsqueeze(0), xywh=True, dim=1) * self.strides

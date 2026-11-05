@@ -27,6 +27,7 @@ def main():
     args = parse_args()
     from ultralytics import YOLO
 
+    # Load the architecture YAML and initialize weights for a new training run.
     model = YOLO(f"yolo11{args.scale}-fpo.yaml")
     model.train(
         data=str(args.data),

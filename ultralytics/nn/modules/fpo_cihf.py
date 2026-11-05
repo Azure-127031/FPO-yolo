@@ -24,12 +24,11 @@ class Conv(nn.Module):
         return self.act(self.bn(self.conv(x)))
 
 class SBA_Precise(nn.Module):
-    """Exchange context between projected deep H and intermediate L features.
+    """Exchange information between deep H and intermediate L features.
 
-    A pooled deep gate conditions channel-wise affine parameters and two
-    mixing coefficients. Element-wise gates modulate the branches before
-    bilinear cross-level exchange. Return the fused intermediate-resolution
-    feature and the two gates, each shaped (B, mid_dim, H, W) at its level."""
+    Both are projected to mid_dim channels. The pooled deep gate supplies
+    affine parameters and mixing coefficients for the two branches. Returns
+    the fused feature at L resolution, plus gates at the L and H resolutions."""
     def __init__(self, cH, cL, mid_dim=128):
         super().__init__()
         self.mid_dim = mid_dim
@@ -63,6 +62,7 @@ class SBA_Precise(nn.Module):
         proc_l_b = proc_params[:, mid:mid * 2]
         proc_h_w = proc_params[:, mid * 2:mid * 3]
         residue = proc_params[:, mid * 3:]
+        # The deep bias and both mixing coefficients are scalars per image.
         proc_h_b = residue[:, :1]
         alpha_l = residue[:, 1:2]
         alpha_h = residue[:, 2:3]
@@ -74,19 +74,18 @@ class SBA_Precise(nn.Module):
         L_down = Upsample(L_proc_gated, H_mid.shape[2:])
         alpha_l = Upsample(alpha_l, L_mid.shape[-2:])
         alpha_h = Upsample(alpha_h, H_mid.shape[-2:])
+        # Each update keeps its original feature and mixes local and cross-level terms.
         L_out = L_mid + alpha_l * L_proc_gated + (1.0 - alpha_l) * H_up
         H_out = H_mid + alpha_h * H_proc_gated + (1.0 - alpha_h) * L_down
         H_out_up = Upsample(H_out, L_out.shape[2:])
         return self.fuse(torch.cat([L_out, H_out_up], dim=1)), g_L, g_H
 
 class HyperScaleDynamicFusionAllScale(nn.Module):
-    """Aggregate aligned features shaped (B, C, S, H, W).
+    """Combine aligned features stored as (B, C, S, H, W).
 
-    Pooled descriptors from all scales condition sigmoid scale weights of
-    shape (B, C, S, 1, 1) and a channel gate of shape (B, C, 1, 1).
-    Both are shared across spatial positions. The historical spatial_gate
-    name denotes this channel gate. Optional g_L/g_H arguments are retained
-    in the interface; the current descriptor is built from x_scales."""
+    Pooled descriptors give weights of shape (B, C, S, 1, 1) and a channel
+    gate of shape (B, C, 1, 1). They vary across images but share spatial
+    positions. g_L and g_H remain in the interface; neither is used here."""
 
     def __init__(self, channels, num_scales=3):
         super().__init__()
@@ -110,16 +109,16 @@ class HyperScaleDynamicFusionAllScale(nn.Module):
         # Weights vary by image, channel, and scale, and are spatially shared.
         scale_weights = self.hypernet(descriptor).view(B, C, S, 1, 1)
         x_fused = (x_scales * scale_weights).sum(dim=2)
-        # Despite the retained name, this is a shared-position channel gate.
+        # spatial_gate is the saved parameter name; its output is (B, C, 1, 1).
         spatial_mod = self.spatial_gate(descriptor).view(B, C, 1, 1)
         return self.bn(self.spatial_conv(x_fused * spatial_mod))
 
 class ScalSeq_SBA(nn.Module):
-    """Build the CIHF neck input from backbone features ordered [B2, B3, B4].
+    """Build the shallow neck input from backbone features [B2, B3, B4].
 
-    Exchange B3/B4 context, align all three projected features to B2, and
-    aggregate them. A learned scalar beta scales the aggregate before adding
-    it to projected B2 and applying SiLU."""
+    B3 first receives B4 context through SBA. Project the resulting B3, the
+    original B4, and B2 to a common width, align them to B2 resolution, and
+    aggregate. Add the beta-scaled result to projected B2 before SiLU."""
 
     def __init__(self, inc, out_ch=128, sba_dim=128):
         super().__init__()
@@ -141,6 +140,7 @@ class ScalSeq_SBA(nn.Module):
         size = p2_base.shape[2:]
         p3_c = Upsample(p3_c, size)
         p4_c = Upsample(p4_c, size)
+        # Insert a scale axis: (B, C, H, W) -> (B, C, 3, H, W).
         x_scales = torch.stack([p2_base, p3_c, p4_c], dim=2)
         y_fused = self.fusion(x_scales, g_L, g_H)
         out = p2_base + self.beta * y_fused

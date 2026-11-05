@@ -11,6 +11,8 @@ On **VisDrone2019 validation**, FPO-YOLO-s reaches **48.1% mAP50 / 29.2% mAP50�
 <p align="center">
   <img src="docs/fpo/assets/architecture.png" alt="FPO-YOLO architecture: backbone, high-resolution neck, P2–P4 heads, and BCSG container" width="100%">
 </p>
+Figures match the submitted manuscript. See the [component diagrams](docs/fpo/architecture.md#current-method-figures) and [earlier figure versions](docs/fpo/development.md#submitted-figure-update-5-november-2026).
+
 
 **Architecture.** BCSG and AAD process local features and scale transitions; CIHF supplies context to the high-resolution neck; PASF fuses the three neck outputs separately for P2, P3, and P4 prediction. [Layer-by-layer code guide →](docs/fpo/architecture.md)
 

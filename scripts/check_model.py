@@ -8,6 +8,7 @@ def main():
     args = parser.parse_args()
     from ultralytics import YOLO
 
+    # Report the requested architecture at the same 640-pixel input size.
     model = YOLO(f"yolo11{args.scale}-fpo.yaml")
     model.info(detailed=False, verbose=True, imgsz=640)
 

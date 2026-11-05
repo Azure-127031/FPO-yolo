@@ -101,3 +101,27 @@ Copying four modules alone does not complete integration:
 A useful reading order is YAML → module forward → parser arguments → experiment comparison. Historical ASFM/SBA, Detect/ASFF, and MDCv3 names require their original configuration context. Reproduce the released architecture with its current YAML classes rather than substituting checkpoints by similar names.
 
 Continue with [experimental evidence](experiments.md) or [running the repository](reproduction.md).
+
+## Current method figures
+
+![FPO-YOLO](assets/architecture.png)
+
+[FPO-YOLO PDF](assets/architecture.pdf)
+
+![BCSG](assets/bcsg.png)
+
+[BCSG PDF](assets/bcsg.pdf)
+
+![AAD](assets/aad.png)
+
+[AAD PDF](assets/aad.pdf)
+
+![CIHF](assets/cihf.png)
+
+[CIHF PDF](assets/cihf.pdf)
+
+![PASF](assets/pasf.png)
+
+[PASF PDF](assets/pasf.pdf)
+
+[All 11 figures and version notes](assets/README.md).

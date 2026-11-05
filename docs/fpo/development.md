@@ -8,6 +8,22 @@ FPO-YOLO developed through component drawings, a complete detection path, VisDro
 
 This page focuses on research progression and figure development. See [code design](architecture.md) for component computations and [experiment history](experiments.md) for the complete comparison tables and training process. Key ablations remain below to explain how the method developed.
 
+
+## Submitted figure update (5 November 2026)
+
+The current assets are the 11 figures from the 3 November submission package.
+They include the final overview, all four component diagrams, dataset illustrations,
+and experimental plots. PDFs are copied byte for byte. PNG previews trim only
+the export-page margins so the figures remain legible on GitHub.
+
+The six earlier PDF/PNG pairs are preserved in the [figure archive](assets/history/before-20261105/README.md).
+Its date records archiving, not drawing. These are earlier repository illustrations;
+use the parent assets directory for the current figures.
+
+![Earlier repository architecture](assets/history/before-20261105/architecture.png)
+
+[Earlier BCSG](assets/history/before-20261105/bcsg.png) · [Bubble plot](assets/history/before-20261105/accuracy-complexity.png) · [Class AP](assets/history/before-20261105/per-class.png) · [Size distributions](assets/history/before-20261105/object-size-distribution.png) · [Qualitative comparison](assets/history/before-20261105/qualitative.png)
+
 ## Documented milestones
 
 The drawing archive predates the GitHub repository. This timeline brings together figure preparation, manuscript revisions, experiments, and public releases so that each stage has a concrete outcome.

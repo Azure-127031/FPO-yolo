@@ -101,3 +101,27 @@ CIHF 的交互与聚合通道在当前配置中为 128；解析器没有对 `Sca
 阅读时建议按“YAML → 对应模块的 forward → tasks.py 的参数传递 → 实验对照”的顺序查阅。历史记录中的 ASFM/SBA、Detect/ASFF 和 MDCv3 等名称需要结合当时配置理解；复现公开结构应使用当前 YAML 指定的类，不能仅凭近似名称替换权重。
 
 下一步：[查看各项改进如何被实验检验](experiments.zh-CN.md) · [按当前环境运行](reproduction.zh-CN.md)。
+
+## 当前方法图
+
+![FPO-YOLO](assets/architecture.png)
+
+[FPO-YOLO PDF](assets/architecture.pdf)
+
+![BCSG](assets/bcsg.png)
+
+[BCSG PDF](assets/bcsg.pdf)
+
+![AAD](assets/aad.png)
+
+[AAD PDF](assets/aad.pdf)
+
+![CIHF](assets/cihf.png)
+
+[CIHF PDF](assets/cihf.pdf)
+
+![PASF](assets/pasf.png)
+
+[PASF PDF](assets/pasf.pdf)
+
+[全部 11 张图及版本说明](assets/README.md)。

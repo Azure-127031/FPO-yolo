@@ -8,6 +8,17 @@ FPO-YOLO 从分模块的计算图、整体检测路径和 VisDrone 实验逐步�
 
 本页侧重研究推进与图件形成。逐模块计算见[代码改进方案](architecture.zh-CN.md)，完整对照表及训练过程见[实验历程](experiments.zh-CN.md)；下面保留关键消融，帮助理解方法如何逐步形成。
 
+
+## 投稿图件同步（2026-11-05）
+
+当前展示使用 11 月 3 日投稿包内的 11 张正式图。结构图保留最终配色、C3k 分支标注和 N2/N3/N4 标签；AAD、CIHF、PASF 及数据集图也一并收录。原 PDF 按投稿文件逐字节保存，网页 PNG 仅去除导出页边空白，便于阅读。
+
+同步前的六组 PDF/PNG 已原样存入[旧图目录](assets/history/before-20261105/README.md)。目录日期表示归档时间，不表示绘图时间；它们是此前仓库展示的版本，不能代替当前方法图。
+
+![此前仓库展示的结构图](assets/history/before-20261105/architecture.png)
+
+[旧版 BCSG](assets/history/before-20261105/bcsg.png) · [旧版气泡图](assets/history/before-20261105/accuracy-complexity.png) · [旧版类别 AP](assets/history/before-20261105/per-class.png) · [旧版尺寸分布](assets/history/before-20261105/object-size-distribution.png) · [旧版定性对比](assets/history/before-20261105/qualitative.png)
+
 ## 可核实的进展记录
 
 项目的图稿积累早于 GitHub 仓库建立。下面将绘图、文稿、实验与开源四条线放在同一时间轴中，说明每个阶段留下了什么。

@@ -26,6 +26,7 @@ def main():
     args = parse_args()
     from ultralytics import YOLO
 
+    # Load the selected checkpoint; the data YAML maps val/test to image folders.
     model = YOLO(str(args.weights))
     model.val(
         data=str(args.data),
@@ -33,6 +34,7 @@ def main():
         imgsz=640,
         batch=args.batch,
         half=args.precision == "fp16",
+        # Keep low-score candidates for AP evaluation, unlike display filtering.
         conf=0.001,
         iou=0.7,
         max_det=300,

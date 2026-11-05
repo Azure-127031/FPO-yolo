@@ -9,14 +9,11 @@ from mmcv.cnn import ConvModule
 from ultralytics.nn.modules.conv import Conv
 
 class MDCv3(nn.Module):
-    """Aggregate features with modulated DCNv2, followed by optional average pooling.
+    """Predict offsets and a mask, apply DCNv2, then pool when stride is 2.
 
-    MDCv3 is the retained implementation name, not the DCNv3 operator.
-    Two predictors supply offset components; tanh, a learned magnitude, and
-    a sample-wise gate scale them before deformable convolution. A separate
-    sigmoid mask modulates the sampled features. Batch normalization and SiLU
-    precede pooling. MMCV reads offsets as interleaved height/width values;
-    historical offset_x/offset_y keys are preserved in that slot order."""
+    The class name is historical; the operator is MMCV ModulatedDeformConv2d.
+    offset_x and offset_y supply its height and width slots, respectively.
+    Their parameter names are kept so existing checkpoints still load."""
     def __init__(self, c1, c2, k=3, stride=1, padding=1):
         super().__init__()
         self.c1, self.c2 = c1, c2
@@ -63,11 +60,13 @@ class MDCv3(nn.Module):
         off_x = self.offset_x(x)
         off_y = self.offset_y(x)
 
-        # MMCV consumes height/width pairs; retain historical parameter names.
+        # Interleave the two 9-channel maps as (h1, w1, ..., h9, w9).
         offset = torch.stack([off_x, off_y], dim=2).view(B, 18, H, W)
 
+        # One amplitude gate per image, broadcast to every sampling position.
         gate = self.deform_gate(x)
 
+        # Bound the raw offsets before applying the learned magnitude.
         offset = torch.tanh(offset) * torch.abs(self.max_offset) * gate
 
         mask = self.mask_pred(x)
@@ -75,17 +74,18 @@ class MDCv3(nn.Module):
         out = self.dcn(x, offset, mask)
         out = self.act(self.bn(out))
 
+        # Aggregate at the input resolution before reducing it by half.
         if self.stride == 2:
             out = self.down(out)
 
         return out
 
 class AAD_v2(nn.Module):
-    """Combine regular stride-2 convolution and deformable aggregation with pooling.
+    """Downsample through a regular branch and a deformable branch.
 
-    A learned sigmoid scalar weights the two branches before channel
-    concatenation and pointwise fusion. It is shared across inputs after
-    training, unlike the adaptive branch's input-dependent amplitude gate."""
+    Each branch produces half the output channels. A shared learned scalar
+    weights them before concatenation and 1x1 fusion. The deformable branch
+    has its own input-dependent offset gate."""
     def __init__(self, c1, c2, k=3):
         super().__init__()
         self.c1, self.c2 = c1, c2
@@ -114,7 +114,7 @@ class AAD_v2(nn.Module):
 
         detail_out = self.detail_branch(x)
 
-        # Weight each branch before concatenation, then project the result.
+        # alpha is shared across inputs; the branches are concatenated, not summed.
         alpha = torch.sigmoid(self.alpha)
         mixed = torch.cat([
             main_out * (1 - alpha),

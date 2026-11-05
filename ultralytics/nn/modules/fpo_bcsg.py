@@ -20,10 +20,7 @@ def _select_groups(
     channels: int,
     target_group_width: int = 32,
 ) -> int:
-    """Choose a divisor of channels starting from channels // target_group_width.
-
-    Decrease the preferred group count until it divides the channel width;
-    the resulting group width need not equal target_group_width exactly."""
+    """Find a channel divisor near the requested group width."""
     if channels <= 0:
         raise ValueError(
             f"channels must be positive, got {channels}"
@@ -44,13 +41,12 @@ def _select_groups(
     return groups
 
 class FreqAware_Scharr_Gate(nn.Module):
-    """Generate a shared-channel spatial gate of shape (B, 1, H, W).
+    """Map local responses to a spatial gate with shape (B, 1, H, W).
 
-    The learnable kernel bank is initialized in Scharr-X, Scharr-Y, then mean
-    filter blocks. Grouped convolution produces 3C output channels; contiguous
-    slices Q1, Q2, Q3 form Concat(Q1 + Q2, Q3) before pointwise gate generation.
-    This is the partitioned implementation, not three filters regrouped per
-    input channel. Historical dx/dy/low variable names refer to these slices."""
+    The trainable kernel bank starts with Scharr-X, Scharr-Y, and mean-filter
+    blocks. Grouped convolution returns 3C channels, split into three contiguous
+    ranges. dx, dy, and low name those ranges, rather than paired derivatives
+    for every input channel."""
 
     def __init__(self, dim: int):
         super().__init__()
@@ -188,12 +184,11 @@ class FreqAware_Scharr_Gate(nn.Module):
         return g_sp
 
 class FCAttn_Gate_Plus(nn.Module):
-    """Generate a spatially shared channel gate of shape (B, C, 1, 1).
+    """Map a pooled descriptor to a channel gate with shape (B, C, 1, 1).
 
-    Global average pooling feeds local 1D channel convolution and a global
-    pointwise projection. A learned scalar mixes the descriptors; another
-    learned scalar multiplies their combination before sigmoid. In BCSG,
-    the input is the feature after spatial residual modulation."""
+    A 1D convolution mixes neighboring descriptor entries; a pointwise
+    projection mixes all channels. gamma combines their outputs, and
+    temperature scales the result before sigmoid."""
 
     def __init__(
         self,
@@ -263,8 +258,10 @@ class FCAttn_Gate_Plus(nn.Module):
         x: torch.Tensor,
     ) -> torch.Tensor:
 
+        # Collapse H and W; keep one descriptor entry per channel.
         desc = self.avg_pool(x)
 
+        # Conv1d reads the channel descriptor as a sequence of length C.
         local = (
             self.conv1d(
                 desc
@@ -291,12 +288,11 @@ class FCAttn_Gate_Plus(nn.Module):
         return g_ch
 
 class BCSGBottleneck_Scharr(nn.Module):
-    """Refine local features with sequential spatial and channel residual gates.
+    """Refine a feature with spatial gating followed by channel gating.
 
-    Pointwise and grouped 3x3 convolutions form F. The spatial update is
-    F_sp = F + sigmoid(alpha_sp) * F * g_sp. The channel gate is computed from
-    F_sp, then F_ref = F_sp + sigmoid(alpha_ch) * F_sp * g_ch.
-    When shortcut is enabled, the output also adds the original input."""
+    Each gate adds a weighted increment to its input. The channel gate reads
+    the spatially updated feature. shortcut adds the original bottleneck input
+    after both updates."""
 
     def __init__(
         self,
@@ -397,20 +393,19 @@ class BCSGBottleneck_Scharr(nn.Module):
         )
 
 class C3k2_BCSG(nn.Module):
-    """Split features, collect successive block outputs, and fuse their concatenation.
+    """Split channels, run blocks on the second half, and fuse all outputs.
 
     Args:
         c1: Input channels.
         c2: Output channels.
         n: Number of internal blocks.
-        shortcut: Enable residual shortcuts within each internal block.
-        e: Hidden-channel expansion ratio, with hidden width int(c2 * e).
-        g: Group count passed to standard C3k blocks when c3k is enabled.
-        c3k: Select standard C3k blocks; False retains the reported BCSG path.
+        shortcut: Use a residual shortcut inside each block.
+        e: Hidden width as a fraction of c2.
+        g: Group count for the optional standard C3k blocks.
+        c3k: Use standard C3k blocks instead of BCSG; defaults to False.
 
-    YAML arguments are [c2, shortcut, e, g, c3k]; omitted arguments retain
-    their defaults. The parser supplies c1 and the scaled repeat count n.
-    Existing [c2, shortcut, e] configurations therefore keep using BCSG."""
+    YAML arguments are [c2, shortcut, e, g, c3k]. The parser supplies c1 and n.
+    Keeping c3k last preserves the argument order of existing model files."""
 
     def __init__(
         self,
@@ -468,6 +463,7 @@ class C3k2_BCSG(nn.Module):
         x: torch.Tensor,
     ) -> torch.Tensor:
 
+        # Keep the first half and append each block output from the second half.
         y = list(
             self.cv1(x).chunk(
                 2,
@@ -492,6 +488,7 @@ class C3k2_BCSG(nn.Module):
         x: torch.Tensor,
     ) -> torch.Tensor:
 
+        # Keep the first half and append each block output from the second half.
         y = list(
             self.cv1(x).split(
                 (self.c, self.c),
